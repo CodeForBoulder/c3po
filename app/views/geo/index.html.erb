@@ -1,0 +1,8 @@
+<h1>Geo#index</h1>
+<% # @geoFeatures.each do |feature| %>
+<% feature = @geoFeatures[0] %>
+<div id='feature-<%= feature.caseNumber %>'>
+  <p><%= feature.caseNumber %></p>
+  <%= commontator_thread(feature) %>
+</div>
+<% # end %>
