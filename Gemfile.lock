@@ -36,15 +36,27 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    acts_as_votable (0.10.0)
     arel (6.0.0)
+    bcrypt (3.1.10)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
     byebug (4.0.5)
       columnize (= 0.9.0)
     columnize (0.9.0)
+    commontator (4.10.5)
+      jquery-rails
+      rails (>= 3.1)
     daemons (1.2.2)
     debug_inspector (0.0.2)
+    devise (3.5.1)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 3.2.6, < 5)
+      responders
+      thread_safe (~> 0.1)
+      warden (~> 1.2.3)
     diff-lcs (1.2.5)
     erubis (2.7.0)
     eventmachine (1.0.7)
@@ -66,6 +78,7 @@ GEM
     minitest (5.6.0)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
+    orm_adapter (0.5.0)
     pg (0.18.1)
     rack (1.6.0)
     rack-test (0.6.3)
@@ -95,6 +108,8 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
+    responders (2.1.0)
+      railties (>= 4.2.0, < 5)
     rspec-core (3.2.3)
       rspec-support (~> 3.2.0)
     rspec-expectations (3.2.1)
@@ -138,6 +153,8 @@ GEM
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    warden (1.2.3)
+      rack (>= 1.0)
     web-console (2.1.2)
       activemodel (>= 4.0)
       binding_of_caller (>= 0.7.2)
@@ -148,8 +165,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  acts_as_votable
   byebug
+  commontator
+  devise
   jquery-rails
+  json
   pg
   rails (= 4.2.1)
   rspec-rails
