@@ -4,9 +4,9 @@ c3po
 
 ### Tech Stack
 
-**FrontEnd:**  Ember based JavaScript/HTML5/SASS
-**Application:**  Rails
-**Data:**  REST API to OpenDataPlus with integration to CityOfBoulder permit data / LafayettePermit
+**FrontEnd:**  Ember based JavaScript/HTML5/SASS  
+**Application:**  Rails  
+**Data:**  REST API to OpenDataPlus with integration to CityOfBoulder permit data / LafayettePermit  
 
 ### Getting Started
 * Download and Install [Vagrant](http://docs.vagrantup.com/v2/installation/)
