@@ -19,6 +19,11 @@ c3po
 * `cd c3po` or `dir c3po`
 * run `vagrant up`
 * when that's done running, `vagrant ssh`
-* `$ rails server -b 0.0.0.0 -p 3000`
+* then install gems and create/migrate the db
+* `cd /vagrant` 
+* `bundle install`
+* `rake db:create`
+* `rake db:migrate`
+* `rails server -b 0.0.0.0 -p 3000`
 * open up your browser and navigate to <http://localhost:3001>
 

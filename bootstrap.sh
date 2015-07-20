@@ -24,9 +24,4 @@ apt-get update
 apt-get -y install postgresql-common
 apt-get -y install postgresql-9.3 libpq-dev
 sudo -u postgres bash -c "psql -c \"CREATE USER vagrant WITH SUPERUSER CREATEDB REPLICATION;\""
-# Install gems and create/migrate the db
-cd /vagrant
-bundle install
-rake db:create
-rake db:migrate
 
