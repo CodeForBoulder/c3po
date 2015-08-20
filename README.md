@@ -4,26 +4,16 @@ c3po
 
 ### Tech Stack
 
-**FrontEnd:**  Ember based JavaScript/HTML5/SASS  
-**Application:**  Rails  
+**FrontEnd:**  Blaze (part of Meteor)  
+**Application:**  Meteor  
 **Data:**  REST API to OpenDataPlus with integration to CityOfBoulder permit data / LafayettePermit  
 
 ### Getting Started
-* Download and Install [Vagrant](http://docs.vagrantup.com/v2/installation/)
-* Download and Install [Virtual Box](https://www.virtualbox.org/wiki/Downloads)
+* Download and Install Meteor (http://docs.meteor.com/#/basic/quickstart)
 * Git clone this repository
   * Requires git 
     * MacOSX: you will need Xcode and Command Line Tools
     * Windows: Go here: <https://git-scm.com/downloads> and download and install
   * Then `git clone https://github.com/CodeForBoulder/c3po.git` 
 * `cd c3po` or `dir c3po`
-* run `vagrant up`
-* when that's done running, `vagrant ssh`
-* then install gems and create/migrate the db
-* `cd /vagrant` 
-* `bundle install`
-* `rake db:create`
-* `rake db:migrate`
-* `rails server -b 0.0.0.0 -p 3000`
-* open up your browser and navigate to <http://localhost:3001>
-
+* TBD...
