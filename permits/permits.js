@@ -1,7 +1,7 @@
 // Collection for all the cases defined in the DevelopmentReview.GeoJSON file
 Cases = new Mongo.Collection("cases");
 var devCases = {};
-var MAP_ZOOM = 14;
+var MAP_ZOOM = 15;
 
 
 /*
@@ -29,7 +29,7 @@ if (Meteor.isClient) {
     
     Meteor.startup(function() {
         GoogleMaps.load();
-
+        $("#nav").slideUp("fast");
     });
     
     function showDetails(e) {
@@ -39,7 +39,7 @@ if (Meteor.isClient) {
         caseNum =  e.feature.getProperty('CASE_NUMBE');
         addr = e.feature.getProperty('CASE_ADDRE');
         selCases = Cases.find({CASE_ADDRE: addr},{fields: {CASE_NUMBE: 1, _id: 0}});
-        console.log("selCases:\n" + selCases.Object + "\n");
+        console.log("selCases:\n" + selCases + "\n");
         selCases.forEach(function (Cases) {
             console.log("Case # " + Cases.CASE_NUMBE);
         });
@@ -53,8 +53,14 @@ if (Meteor.isClient) {
         $("#selDetails").append("<button>Subscribe</button>");            
         $("#selDetails").append("<p id='note'>(double click to close and return to the map)</p>");
         $("#selDetails").slideDown("slow",function() {
+            $("#nav").show();
             $(this).dblclick(function() {
                 $(this).slideUp("slow");
+                $("#nav").hide();
+            });
+            $("#close").click(function() {
+                $("#selDetails").slideUp("slow");
+                $("#nav").hide();
             });
         });       
     };
@@ -70,20 +76,6 @@ HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) 
     });
 */
 
-
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
-    }
-  });
-
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
-    }
-  });
-    
     Template.map.helpers({
         geolocationError: function() {
             var error = Geolocation.error();
