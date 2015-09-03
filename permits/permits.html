@@ -1,14 +1,46 @@
 <head>
-  <title>permits</title>
-</head>
+    <title>permits</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <style type="text/css">
+            html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js">
+    </script>
+
+</head>
+<!--
+    ToDo:
+        1. If Boulder is not within the user's area (won't show up in the location based map), center on Boulder
+        2. Get access to docs
+-->
 <body>
-  <h1>Welcome to Meteor!</h1>
+    <header>
+        <img src="/img/boulderLogo.png" alt="City of Boulder">
+        {{> loginButtons}}
+        <h1>Boulder Permit Access</h1>
+    </header>
 
   {{> hello}}
+    {{> map}}
 </body>
 
 <template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+
+    <div id="selDetails"></div>
+</template>
+
+<template name="map">
+    <div class="map-container" id="map-canvas">
+        
+        {{#unless geolocationError}}
+            {{> googleMap name="map" options=mapOptions}}
+        {{else}}
+            Geolocation failed: {{geolocationError}}
+        {{/unless}}
+    </div>
+
 </template>

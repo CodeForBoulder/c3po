@@ -7,3 +7,10 @@
 meteor-platform
 autopublish
 insecure
+templates:tabs
+dburles:google-maps
+http
+accounts-password
+accounts-ui
+accounts-facebook
+mdg:geolocation
