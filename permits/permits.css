@@ -6,11 +6,16 @@ body {
 
 header {
     background-color: cadetblue;
-    color: white;
+    color: white; 
 }
+
 header img {
     position: relative;
     left: 10px;
+}
+
+header a {
+    color: white;
 }
 
 p {
@@ -24,6 +29,7 @@ header h1 {
 
 #login-buttons {
     display: block;
+    color: white;
     padding: 10px 0px 10px 10px;
 }
 
