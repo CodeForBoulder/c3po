@@ -25,6 +25,7 @@ if (Meteor.isClient) {
     });
 
     function showDetails(e) {
+        Modal.show('caseModal')
         // redo to allow for multiple cases
         // find all the cases matching the address of the selected case
         // probably best as a backend search and a Mongo query
@@ -35,16 +36,16 @@ if (Meteor.isClient) {
         selCases.forEach(function (Cases) {
             console.log("Case # " + Cases.CASE_NUMBE);
         });
-        $("#selDetails").html("<h3>" + caseNum + "</h3>");
+        $("#modalHead").html("<h3>" + caseNum + "</h3>");
         // for each property, add an HTML paragraph
         e.feature.forEachProperty(function (val, name) {
-            $("#selDetails").append("<p>",name,":\t",val,"</p>");
+            str = "<tr><td class='case-property'>"+humanReadableName(name)+":</td><td> "+val+"</td></tr>"
+            $("#modalTableData").append(str);
         });
-        $("#selDetails").append("<button>Docs</button>");
-        $("#selDetails").append("<button>Discuss</button>");
-        $("#selDetails").append("<button>Subscribe</button>");            
-        $("#selDetails").append("<p id='note'>(double click to close and return to the map)</p>");
-        $("#selDetails").slideDown("slow",function() {
+        $("#modalBody").append("<button type='button' class='btn btn-primary modal-btn'>Docs</button>");
+        $("#modalBody").append("<button type='button' class='btn btn-primary modal-btn'>Discuss</button>");
+        $("#modalBody").append("<button type='button' class='btn btn-primary modal-btn'>Subscribe</button>");            
+        $("#modalBody").slideDown("slow",function() {
             $("#nav").show();
             $(this).dblclick(function() {
                 $(this).slideUp("slow");
@@ -56,6 +57,27 @@ if (Meteor.isClient) {
             });
         });       
     };
+
+    function humanReadableName(name) {
+      switch(name) {
+        case "CASE_NUMBE":
+          return "Case Number";
+        case "CASE_TYPE":
+          return "Type";
+        case "APPLICANT_":
+          return "Applicant";
+        case "CASE_ADDRE":
+          return "Address";
+        case "CASE_DESCR":
+          return "Description";
+        case "STAFF_EMAI":
+          return "Email";
+        case "STAFF_PHON":
+          return "Phone";
+        case "STAFF_CONT":
+          return "Contact";
+      }
+    }
 /*
 HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) {
         console.log(result.data);
