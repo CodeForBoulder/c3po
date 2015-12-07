@@ -30,7 +30,19 @@ header h1 {
 #login-buttons {
     display: block;
     color: white;
-    padding: 10px 0px 10px 10px;
+    padding: 10px 25px 10px 10px;
+    float: right;
+}
+
+#fb-post {
+    display: block;
+    padding: 5px 5px 5px 5px;
+}
+
+#fbFeed {
+    display: block;
+    min-height: 25px;
+    height: 25px;
 }
 
 #selDetails {

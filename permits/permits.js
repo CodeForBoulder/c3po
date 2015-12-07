@@ -8,21 +8,85 @@ if (Meteor.isClient) {
     // counter starts at 0
     Session.setDefault('counter', 0);
     
-    Meteor.subscribe("all-cases");
+//    Meteor.subscribe("all-cases");
     
     Meteor.startup(function() {
+        console.log("Entered Meteor.startup");
+        
         GoogleMaps.load();
+        console.log("Loaded GoogleMaps");
+
+        
+// c3poDev for localhost:3000 operation
+
+        // set up Facebook sdk
+
+//        $("#feed").click(function () {
+//            serverFeed()
+//            console.log("in #feed.click()");
+//        });
+//        Accounts.ui.config({
+//            requestPermissions: {
+//                facebook: ['publish_actions']
+//            }
+//        });
+        
+//    window.fbAsyncInit = function() {
+//        console.log("About to call FB.init");
+
+//        FB.init({
+////            appId      : curAppId, // set appId based on localhost vs meteor.com host
+//            appId      : '109055546115993',
+//            status     : true,
+//            version    : 'v2.4',
+//            xfbml      : true
+//        });
+
+//        console.log("Finished call to FB.init");
+//    };
+
+//            appId      : '109055546115993', // localhost
+//            appId      : '1459289887712466', // c3poTest
+    
         $("#nav").slideUp("fast");
 
         /* set appId for Facebook integration */
         /* First works with ManUnderhill's localhost, second with cfbc3po.meteor.com */
         /* as registered Facebook Apps */
         
+
         var curHref = location.href;
-        var patt = new RegExp("localhost");
-        curAppId = (patt.test(location.href)) ? '109055546115993':'1459289887712466';
-        $(".fb-like").attr("data-href",curHref);
+        console.log("Obtained curHref = " + curHref);
+//        var patt = new RegExp("localhost");
+//        curAppId = (patt.test(location.href)) ? '109055546115993':'1459289887712466';
+//
+//        curAppId = '109055546115993';
+//        $(".fb-like").attr("data-href",curHref);
+        console.log("Leaving Meteor.startup");
     });
+    
+//    function showFeed() {
+//        // Todo:
+//        //    1. Get admin's account info, use page key to post to the feed
+//        //    2. Get this into the js file!
+//        //
+//        console.log("Entering showFeed() - disabled");
+//
+//var feedHtml = FB.api('/914491901967402/feed','post',
+//                                  {message: 'Autoposted from app'},
+//                                  function(response) {
+//                if (!response || response.error) {
+//                    alert('Error occured: ' + response.error);
+//                    feedHtml = "Error occurred: " + response.error.message;
+//                    console.log("fbFeed error: " + feedHtml);
+//                } else {
+//                    alert('Post ID: ' + response.id);
+//                }
+//                });
+//        $("#fbFeed").html("new value");
+//
+//        //        console.log("fbFeed = " + feedHtml.toString());
+//    };
 
     function showDetails(e) {
         // redo to allow for multiple cases
@@ -40,8 +104,8 @@ if (Meteor.isClient) {
         e.feature.forEachProperty(function (val, name) {
             $("#selDetails").append("<p>",name,":\t",val,"</p>");
         });
-        $("#selDetails").append("<button>Docs</button>");
-        $("#selDetails").append("<button>Discuss</button>");
+        $("#selDetails").append("<button onclick='showDocs(Cases.CASE_NUMBE)'>Docs</button>");
+        $("#selDetails").append("<button id='docsBtn'>Discuss</button>");
         $("#selDetails").append("<button>Subscribe</button>");            
         $("#selDetails").append("<p id='note'>(double click to close and return to the map)</p>");
         $("#selDetails").slideDown("slow",function() {
@@ -54,9 +118,47 @@ if (Meteor.isClient) {
                 $("#selDetails").slideUp("slow");
                 $("#nav").hide();
             });
-        });       
+        }); 
+        $("#docsBtn").click(showDocs(caseNum));
     };
-/*
+    
+    function showDocs(caseNum) {
+        // insert the document links below the buttons in the selDocs div
+        // div starts empty, so no need to hide it on initialization
+        // remember to clear it when done
+        // first, get the doc names, i.e.:
+        console.log("entered showDocs");
+        var xmlhttp;
+        var docURL = "https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=";
+        
+        if (window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            // code for older browsers
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+//                var docTitles = xmlhttp.responseText;
+                document.getElementById("selDocs").innerHTML =
+                    xmlhttp.responseText;
+            } else {
+                console.log("failed to retrieve documents for caseNumber " + caseNum);
+            }
+        }
+        xmlhttp.open("GET", docURL + caseNum, true);
+        xmlhttp.send();
+
+        console.log("leaving showDocs");
+        //   GET https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=LUR2013-00070
+        // This returns an array of titles
+        // Convert the string so no spaces, etc.
+        // Then display the links by appending the titles to:
+        //   "https://www-static.bouldercolorado.gov/docs/PDS/plans/"+caseNum+"/"
+        // When ready, slideDown this div
+        // Provide a close button and double click to slideUp this div.
+    };
+
 HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) {
         console.log(result.data);
         cases = result;
@@ -66,28 +168,42 @@ HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) 
             console.log("Inserted!");
         };
     });
-*/
+
 
     Template.map.helpers({
         geolocationError: function() {
+            console.log("in geolocationError()");
             var error = Geolocation.error();
             return error && error.message;
         },
         mapOptions: function() {
+            
             var latLng = Geolocation.latLng();
             // Initialize the map once we have the latLng.
+            console.log("in mapOptions -- DISABLED");
             if (GoogleMaps.loaded() && latLng) {
                 return {
                     center: new google.maps.LatLng(latLng.lat, latLng.lng),
                     zoom: MAP_ZOOM
                 };
+            } else {
+                console.log("either maps not loaded or latLng missing");
+                return {
+                    center:
+                        {
+                            lat: 40.0275, 
+                            lng: -105.251945
+                        },
+                    zoom: MAP_ZOOM
+                }
             }
         },
     });
-    
+
     Template.map.onCreated(function() {
         GoogleMaps.ready('map', function(map) {
-            var latLng = Geolocation.latLng();
+            console.log("onCreated - latlng = " + JSON.stringify(latLng) + " DISABLED");
+            var latLng = Geolocation.latLng() || {center: { lat: 40.0275, lng: -105.251945}, zoom: MAP_ZOOM};
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(latLng.lat, latLng.lng),
                 map: map.instance
@@ -96,14 +212,12 @@ HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) 
             map.instance.data.addListener('click', function(event) {
                 showDetails(event);
             });
-
-            /*
             // Load the GeoJSON information
             var fs = require ('fs');
                 var cases;
 
             // Read the file and send to the callback
-            fs.readFile('DevelopmentReview.GeoJSON', handleGeoJSON)
+            fs.readFile('DevelopmentReview.GeoJSON', handleGeoJSON);
 
             // GeoJSON load callback
             function handleGeoJSON(err, data) {
@@ -111,38 +225,69 @@ HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) 
                 cases = JSON.parse(data);
 
             };
-*/            
         });
     });
     
-// c3poDev for localhost:3000 operation
 
-        // set up Facebook sdk
+//    Template.fbbtn.onRendered(function() {
+//        console.log("Entered fbbtn.onRendered()");
+//
+//        try {
+//            FB.XFBML.parse();
+//        }catch(e) {};
+//
+//
+//        console.log("Leaving fbbtn.onRendered()");
+//    });
+//   
+//    
+//   
+//    Template.facebookPost.onRendered(function() {
+//        console.log("facebookPost.onRendered()");
+//        try {
+//            FB.XFBML.parse();
+//        }catch(e) {}   
+//    });
 
-    window.fbAsyncInit = function() {
-        console.log("About to call FB.init");
-        FB.init({
-            appId      : curAppId, // set appId based on localhost vs meteor.com host
-            status     : true,
-            version    : 'v2.4',
-            xfbml      : true
-        });
-        console.log("Finished call to FB.init");
-    };
-
-//            appId      : '109055546115993', // localhost
-//            appId      : '1459289887712466', // c3poTest
-    
-
-    Template.fbbtn.onRendered(function() {
-        try {
-            FB.XFBML.parse();
-        }catch(e) {}   
-    });
-   
 };
 
 if (Meteor.isServer) {
+    
+    function serverFeed() {
+        // Todo:
+        //    1. Get admin's account info, use page key to post to the feed
+        //    2. Get this into the js file!
+        //
+        console.log("Entering serverFeed()");
+
+        var pageAccessToken = "1459289887712466|4gmChmzJ2gEpYNJR38jK6g0Leuw";
+        FB.api('/109055546115993/accounts','get',function(response) {
+            if (!response || response.error) {
+                alert('Error on getting app accounts info for app');
+            } else {
+                alert('Page access for app (accounts object):\n' + response);
+            };
+        });
+
+        
+
+        var feedHtml = FB.api('/914491901967402/feed','post',
+                              {message: 'Autoposted from server on startup',
+                               access_token: pageAccessToken
+                              },
+                              function(response) {
+            if (!response || response.error) {
+                alert('Error occured: ' + response.error);
+                feedHtml = "Error occurred: " + response.error.message;
+                console.log("fbFeed error: " + feedHtml);
+            } else {
+                alert('Post ID: ' + response.id);
+            }
+            });
+        
+            console.log("fbFeed = " + feedHtml.toString());
+    };
+
     Meteor.startup(function () {
         // code to run on server at startup
         // 1. Create a Mongo collection of properties (CASE_NUMBE's) by address from the GeoJSON file.
@@ -151,9 +296,9 @@ if (Meteor.isServer) {
         // 3. Build a Mongo collection of features for each CASE_NUMBE
 //        devCases = HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON")).data;
         devCases = JSON.parse(Assets.getText("DevelopmentReview.GeoJSON"));        // load the GeoJSON
- //       window.alert("parsed the DevelopmentReview.GeoJSON file");
+//        window.alert("parsed the DevelopmentReview.GeoJSON file"); // no window object on the server!
         for (devCase in devCases) {
-            Cases.insert(devCase);
+           Cases.insert(devCase);
         };
         Meteor.publish("all-cases", function () {
             return Cases.find(); // everything

@@ -7,6 +7,12 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+<!--    <script>
+        var config = {message: "Auto generated post"};
+    </script>
+-->
+
+    
 </head>
 <!--
     ToDo:
@@ -15,6 +21,35 @@
 -->
 <body>
     <div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=109055546115993";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+    <script>
+/*    function showFeed() {
+        // Todo:
+        //    1. Get admin's account info, use page key to post to the feed
+        //    2. Get this into the js file!
+        //
+            var feedHtml = FB.api('/914491901967402/feed','post',
+                                  {message: 'Autoposted from app'},
+                                  function(response) {
+                if (!response || response.error) {
+                    alert('Error occured: ' + response.error);
+                    feedHtml = "Error occurred: " + response.error.message;
+                    console.log("fbFeed error: " + feedHtml);
+                } else {
+                    alert('Post ID: ' + response.id);
+                }
+                });
+        $("#fbFeed").html("new value");
+//        console.log("fbFeed = " + feedHtml.toString());
+    };
+    */
+    </script>
 
 <!--
     <script>(function(d, s, id) {
@@ -28,15 +63,22 @@
     }(document, 'script', 'facebook-jssdk'));</script>
 -->
     
+
     <header>
         <img src="/img/boulderLogo.png" alt="City of Boulder">
-        {{> loginButtons}}
+        {{> loginButtons align="right"}}
         <h1>Boulder Permit Access</h1>
         {{> fbbtn}}
+        &nbsp;
+<!--        <div><input id="feed" type="submit" value="Show Feed"/><br></div>
+        <div id="fbFeed">fbFeed</div>
+        <p>{{> facebookPost config}}</p>
+-->
     </header>
 
   {{> thumbnail}}
-    {{> map}}
+<!-- is the map load causing the no route problem? no! -->
+{{> map}} 
 </body>
 
 <template name="thumbnail">
@@ -45,6 +87,12 @@
             <input type="submit" name="close" value="x" id="close" alt="close" /><br>
         </div>
         <div id="selDetails">
+        </div>
+        <div id="selDocs">
+        </div>
+        <div id="discuss">
+            <div class="fb-comments" data-href="https://www.facebook.com/boulderc3po/" data-width="300" data-numposts="5">
+            </div>
         </div>
     </div>
 </template>
@@ -56,7 +104,9 @@
             {{> googleMap name="map" options=mapOptions}}
         {{else}}
             Geolocation failed: {{geolocationError}}
+            {{> googleMap name="map" options=mapOptions}}
         {{/unless}}
+        <p>map div in template map</p>
     </div>
 
 </template>
