@@ -180,7 +180,7 @@ if (Meteor.isClient) {
           return "Contact";
       }
     }
-/*
+
 HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) {
         console.log(result.data);
         cases = result;
@@ -306,7 +306,7 @@ if (Meteor.isServer) {
                 alert('Post ID: ' + response.id);
             }
             });
-        
+
             console.log("fbFeed = " + feedHtml.toString());
     };
 
@@ -327,4 +327,3 @@ if (Meteor.isServer) {
         });
     });
 };
-
