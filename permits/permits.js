@@ -89,26 +89,49 @@ if (Meteor.isClient) {
 //    };
 
     function showDetails(e) {
-        Modal.show('caseModal')
+        caseNum =  e.feature.getProperty('CASE_NUMBE');
+        addr = e.feature.getProperty('CASE_ADDRE');
+        featureProperties = new Array();
+        e.feature.forEachProperty(function (val, name) {
+            featureProperties.push({val: val, name: name});
+        });
+        var permit = Cases.findOne({CASE_NUMBE: caseNum});
+        var canSubscribe = true;
+        var currentUser = Meteor.user();
+        if(currentUser == null) {
+            canSubscribe = false;
+        } else {
+            if(currentUser !== null && currentUser.profile.subscriptions === undefined) {
+                Meteor.users.update(Meteor.userId(), {$set: {'profile.subscriptions': new Array()}});
+            }
+            if(currentUser !== null) {
+                canSubscribe = jQuery.inArray(caseNum, currentUser.profile.subscriptions) < 0;
+            }
+        }
+        Modal.show('caseModal', 
+            {
+                caseNum: caseNum,
+                featureProperties: featureProperties,
+                canSubscribeToProject: canSubscribe
+            }
+        );
+
+        $('.btn-subscribe-project').click(function(e){
+            var subscribeButton = $(e.target);
+            var caseNum = subscribeButton.data('casenumber');
+            var permit = Cases.findOne({CASE_NUMBE: caseNum});
+            var currentUser = Meteor.user();
+            var userSubscriptions = currentUser.profile.subscriptions;
+            userSubscriptions.push(caseNum);
+            Meteor.users.update(Meteor.userId(), {$set: {'profile.subscriptions': userSubscriptions}});
+        });
+
         // redo to allow for multiple cases
         // find all the cases matching the address of the selected case
         // probably best as a backend search and a Mongo query
-        caseNum =  e.feature.getProperty('CASE_NUMBE');
-        addr = e.feature.getProperty('CASE_ADDRE');
-        selCases = Cases.find({CASE_ADDRE: addr},{fields: {CASE_NUMBE: 1, _id: 0}});
-        console.log("selCases:\n" + selCases + "\n");
-        selCases.forEach(function (Cases) {
-            console.log("Case # " + Cases.CASE_NUMBE);
-        });
-        $("#modalHead").html("<h3>" + caseNum + "</h3>");
+        //$("#modalHead").html("<h3>" + caseNum + "</h3>");
         // for each property, add an HTML paragraph
-        e.feature.forEachProperty(function (val, name) {
-            str = "<tr><td class='case-property'>"+humanReadableName(name)+":</td><td> "+val+"</td></tr>"
-            $("#modalTableData").append(str);
-        });
-        $("#modalBody").append("<button type='button' class='btn btn-primary modal-btn'>Docs</button>");
-        $("#modalBody").append("<button type='button' class='btn btn-primary modal-btn'>Discuss</button>");
-        $("#modalBody").append("<button type='button' class='btn btn-primary modal-btn'>Subscribe</button>");            
+        
         $("#modalBody").slideDown("slow",function() {
             $("#nav").show();
             $(this).dblclick(function() {
@@ -120,48 +143,11 @@ if (Meteor.isClient) {
                 $("#nav").hide();
             });
         }); 
-        $("#docsBtn").click(showDocs(caseNum));
-    };
-    
-    function showDocs(caseNum) {
-        // insert the document links below the buttons in the selDocs div
-        // div starts empty, so no need to hide it on initialization
-        // remember to clear it when done
-        // first, get the doc names, i.e.:
-        console.log("entered showDocs");
-        var xmlhttp;
-        var docURL = "https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=";
-        
-        if (window.XMLHttpRequest) {
-            xmlhttp = new XMLHttpRequest();
-        } else {
-            // code for older browsers
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-//                var docTitles = xmlhttp.responseText;
-                document.getElementById("selDocs").innerHTML =
-                    xmlhttp.responseText;
-            } else {
-                console.log("failed to retrieve documents for caseNumber " + caseNum);
-            }
-        }
-        xmlhttp.open("GET", docURL + caseNum, true);
-        xmlhttp.send();
-
-        console.log("leaving showDocs");
-        //   GET https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=LUR2013-00070
-        // This returns an array of titles
-        // Convert the string so no spaces, etc.
-        // Then display the links by appending the titles to:
-        //   "https://www-static.bouldercolorado.gov/docs/PDS/plans/"+caseNum+"/"
-        // When ready, slideDown this div
-        // Provide a close button and double click to slideUp this div.
     };
 
-    function humanReadableName(name) {
-      switch(name) {
+    Template.caseModal.helpers({
+        humanReadableName: function(name) {
+            switch(name) {
         case "CASE_NUMBE":
           return "Case Number";
         case "CASE_TYPE":
@@ -179,18 +165,8 @@ if (Meteor.isClient) {
         case "STAFF_CONT":
           return "Contact";
       }
-    }
-
-HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) {
-        console.log(result.data);
-        cases = result;
-        for (pCase in cases) {
-            console.log("About to insert: ",pCase);
-            cases.insert(pCase);
-            console.log("Inserted!");
-        };
+        }
     });
-
 
     Template.map.helpers({
         geolocationError: function() {
@@ -234,19 +210,6 @@ HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON"), function(err,result) 
             map.instance.data.addListener('click', function(event) {
                 showDetails(event);
             });
-            // Load the GeoJSON information
-            var fs = require ('fs');
-                var cases;
-
-            // Read the file and send to the callback
-            fs.readFile('DevelopmentReview.GeoJSON', handleGeoJSON);
-
-            // GeoJSON load callback
-            function handleGeoJSON(err, data) {
-                if (err) throw err;
-                cases = JSON.parse(data);
-
-            };
         });
     });
     
@@ -318,9 +281,8 @@ if (Meteor.isServer) {
         // 3. Build a Mongo collection of features for each CASE_NUMBE
 //        devCases = HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON")).data;
         devCases = JSON.parse(Assets.getText("DevelopmentReview.GeoJSON"));        // load the GeoJSON
-//        window.alert("parsed the DevelopmentReview.GeoJSON file"); // no window object on the server!
-        for (devCase in devCases) {
-           Cases.insert(devCase);
+        for (devCaseIndex in devCases.features) {
+           Cases.insert(devCases.features[devCaseIndex].properties);
         };
         Meteor.publish("all-cases", function () {
             return Cases.find(); // everything
