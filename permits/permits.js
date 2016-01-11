@@ -282,8 +282,10 @@ if (Meteor.isServer) {
 //        devCases = HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON")).data;
         devCases = JSON.parse(Assets.getText("DevelopmentReview.GeoJSON"));        // load the GeoJSON
         for (devCaseIndex in devCases.features) {
-           Cases.insert(devCases.features[devCaseIndex].properties);
-        };
+           var properties = devCases.features[devCaseIndex].properties;
+           if(Cases.find({CASE_NUMBE: properties['CASE_NUMBE']}, {limit:1}).count() < 1)
+              Cases.insert(properties);
+        }
         Meteor.publish("all-cases", function () {
             return Cases.find(); // everything
         });
