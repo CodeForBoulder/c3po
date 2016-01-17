@@ -95,7 +95,7 @@ if (Meteor.isClient) {
         e.feature.forEachProperty(function (val, name) {
             featureProperties.push({val: val, name: name});
         });
-        var permit = Cases.findOne({CASE_NUMBE: caseNum});
+        var permit = Cases.findOne({"properties.CASE_NUMBE": caseNum});
         var canSubscribe = true;
         var currentUser = Meteor.user();
         if(currentUser == null) {
@@ -119,7 +119,7 @@ if (Meteor.isClient) {
         $('.btn-subscribe-project').click(function(e){
             var subscribeButton = $(e.target);
             var caseNum = subscribeButton.data('casenumber');
-            var permit = Cases.findOne({CASE_NUMBE: caseNum});
+            var permit = Cases.findOne({"properties.CASE_NUMBE": caseNum});
             var currentUser = Meteor.user();
             var userSubscriptions = currentUser.profile.subscriptions;
             userSubscriptions.push(caseNum);
@@ -206,7 +206,15 @@ if (Meteor.isClient) {
                 position: new google.maps.LatLng(latLng.lat, latLng.lng),
                 map: map.instance
             });
-            map.instance.data.loadGeoJson('/DevelopmentReview.GeoJSON'); // place json file in /public folder
+            /*var reviewCases = {
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+            };*/
+            //reviewCases.features = Cases.find().fetch();
+            Cases.find().map(function(reviewCase){
+                map.instance.data.addGeoJson(reviewCase);
+            });
+            //map.instance.data.addGeoJson(reviewCases); // place json file in /public folder
             map.instance.data.addListener('click', function(event) {
                 showDetails(event);
             });
@@ -283,8 +291,9 @@ if (Meteor.isServer) {
         devCases = JSON.parse(Assets.getText("DevelopmentReview.GeoJSON"));        // load the GeoJSON
         for (devCaseIndex in devCases.features) {
            var properties = devCases.features[devCaseIndex].properties;
-           if(Cases.find({CASE_NUMBE: properties['CASE_NUMBE']}, {limit:1}).count() < 1)
-              Cases.insert(properties);
+           if(Cases.find({'properties.CASE_NUMBE': properties['CASE_NUMBE']}, {limit:1}).count() < 1)
+              devCases.features[devCaseIndex]._id = properties['CASE_NUMBE'];
+              Cases.insert(devCases.features[devCaseIndex]);
         }
         Meteor.publish("all-cases", function () {
             return Cases.find(); // everything
