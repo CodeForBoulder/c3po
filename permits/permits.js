@@ -124,6 +124,7 @@ if (Meteor.isClient) {
             var userSubscriptions = currentUser.profile.subscriptions;
             userSubscriptions.push(caseNum);
             Meteor.users.update(Meteor.userId(), {$set: {'profile.subscriptions': userSubscriptions}});
+            subscribeButton.hide();
         });
 
         // redo to allow for multiple cases
@@ -285,7 +286,7 @@ if (Meteor.isServer) {
         // code to run on server at startup
         // 1. Create a Mongo collection of properties (CASE_NUMBE's) by address from the GeoJSON file.
         // 2. Build a Mongo collection of documents for each property
-        //     These are stored in https://www-static-bouldercolorado.gov/docs/PDS/Plans/<CASE_NUMBE>/ folder
+        //     These are stored in https://www-static.bouldercolorado.gov/docs/PDS/Plans/<CASE_NUMBE>/ folder
         // 3. Build a Mongo collection of features for each CASE_NUMBE
 //        devCases = HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON")).data;
         devCases = JSON.parse(Assets.getText("DevelopmentReview.GeoJSON"));        // load the GeoJSON

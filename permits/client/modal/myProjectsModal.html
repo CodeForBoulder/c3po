@@ -9,9 +9,7 @@
           <table class="table table-striped" id="modalTable">
             <tbody id="modalTableData">
               {{#each projects}}
-              <tr>
-                <td class='my-projects-title'>{{this}}</td>
-              </tr>
+                {{> myProjectItem }}
               {{/each}}
             </tbody>
           </table>
@@ -24,4 +22,10 @@
       </div>
     </div>
   </div>
+</template>
+
+<template name="myProjectItem">
+    <tr>
+        <td class='my-projects-title'>{{properties.CASE_NUMBE}}: {{properties.CASE_DESCR}}</td>
+    </tr>
 </template>
