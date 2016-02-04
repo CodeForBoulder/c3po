@@ -1,5 +1,5 @@
-<template name="caseModal">
-  <div class="modal fade">
+<template name="caseModal" id="caseModalTemplate">
+  <div class="modal" id="caseModal">
     <div class="modal-dialog">
       <div class="modal-content">
 
@@ -15,7 +15,7 @@
               {{/each}}
             </tbody>
         	</table>
-          <button type='button' class='btn btn-primary modal-btn'>Docs</button>
+          <button type='button' class='btn btn-primary modal-btn btn-show-docs'>Docs</button>
           <button type='button' class='btn btn-primary modal-btn'>Discuss</button>
           {{#if canSubscribeToProject}}
           <button 

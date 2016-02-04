@@ -48,6 +48,10 @@ td {
     min-height: 25px;
     height: 25px;
 }
+#discuss {
+    max-height: 250px;   
+    overflow: auto;
+}
 
 #selDetails {
     border: 0px;

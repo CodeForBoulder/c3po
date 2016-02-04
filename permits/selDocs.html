@@ -1,0 +1,12 @@
+
+<template name="docListOld">
+    <div>
+        <ul>
+            <li><h2>Document Links</h2></li>
+            {{docLinks}}
+            {{#each docLinks}}
+                <li><a href="{{url}}">{{title}}</a>A Link</li>
+            {{/each}}
+        </ul>
+    </div>
+</template>

@@ -14,11 +14,6 @@
 
     
 </head>
-<!--
-    ToDo:
-        1. If Boulder is not within the user's area (won't show up in the location based map), center on Boulder
-        2. Get access to docs
--->
 <body>
     <div id="fb-root"></div>
 <script>(function(d, s, id) {
@@ -63,17 +58,12 @@
     }(document, 'script', 'facebook-jssdk'));</script>
 -->
     
-
     <header>
         <img src="/img/boulderLogo.png" alt="City of Boulder">
         {{> loginButtons align="right"}}
         <h1>Boulder Permit Access</h1>
         {{> fbbtn}}
         &nbsp;
-<!--        <div><input id="feed" type="submit" value="Show Feed"/><br></div>
-        <div id="fbFeed">fbFeed</div>
-        <p>{{> facebookPost config}}</p>
--->
     </header>
 
   {{> thumbnail}}
@@ -88,10 +78,8 @@
         </div>
         <div id="selDetails">
         </div>
-        <div id="selDocs">
-        </div>
         <div id="discuss">
-            <div class="fb-comments" data-href="https://www.facebook.com/boulderc3po/" data-width="300" data-numposts="5">
+            <div class="fb-comments" data-href="https://www.facebook.com/boulderc3po/" data-width="300" data-numposts="2">
             </div>
         </div>
     </div>

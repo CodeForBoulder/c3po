@@ -5,6 +5,9 @@ var MAP_ZOOM = 15;
 var curAppId ;
 
 if (Meteor.isClient) {
+    var TitleLinkRes = [{}];
+    var lastE = {};
+
     // counter starts at 0
     Session.setDefault('counter', 0);
     
@@ -15,6 +18,7 @@ if (Meteor.isClient) {
         
         GoogleMaps.load();
         console.log("Loaded GoogleMaps");
+        
 
         
 // c3poDev for localhost:3000 operation
@@ -48,7 +52,9 @@ if (Meteor.isClient) {
 //            appId      : '109055546115993', // localhost
 //            appId      : '1459289887712466', // c3poTest
     
+        $("#selDocs").slideUp("fast");
         $("#nav").slideUp("fast");
+        
 
         /* set appId for Facebook integration */
         /* First works with ManUnderhill's localhost, second with cfbc3po.meteor.com */
@@ -63,32 +69,87 @@ if (Meteor.isClient) {
 //        curAppId = '109055546115993';
 //        $(".fb-like").attr("data-href",curHref);
         console.log("Leaving Meteor.startup");
-    });
-    
-//    function showFeed() {
-//        // Todo:
-//        //    1. Get admin's account info, use page key to post to the feed
-//        //    2. Get this into the js file!
-//        //
-//        console.log("Entering showFeed() - disabled");
-//
-//var feedHtml = FB.api('/914491901967402/feed','post',
-//                                  {message: 'Autoposted from app'},
-//                                  function(response) {
-//                if (!response || response.error) {
-//                    alert('Error occured: ' + response.error);
-//                    feedHtml = "Error occurred: " + response.error.message;
-//                    console.log("fbFeed error: " + feedHtml);
-//                } else {
-//                    alert('Post ID: ' + response.id);
-//                }
-//                });
+                });
 //        $("#fbFeed").html("new value");
 //
-//        //        console.log("fbFeed = " + feedHtml.toString());
+//        //         console.log("fbFeed = " + feedHtml.toString());
 //    };
+//
+    function showDocs(curCaseNum) {
+            //  Build document links array and invoke the docsModal.
+            // 
+            //  GET https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=LUR2013-00070
+            // This returns an array of titles
+            // Convert the string so no spaces, etc.
+            // Then display the links by appending the titles to:
+            //   "https://www-static.bouldercolorado.gov/docs/PDS/plans/"+caseNum+"/"
+            //
+            var TitleLinkCol = [];
 
+            var xmlhttp;
+            var docURL = "https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=";
+
+            if (window.XMLHttpRequest) {
+                xmlhttp = new XMLHttpRequest();
+            } else {
+                // code for older browsers
+                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            xmlhttp.onreadystatechange = function() {
+                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                    var docTitles = xmlhttp.responseText;
+                    // response text is a JSON string that needs to be parsed...
+                    var docTitlesObj = JSON.parse(docTitles);
+                    var titleUrlBase = "https://www-static.bouldercolorado.gov/docs/PDS/plans/"+curCaseNum+"/";
+                    if (docTitlesObj.length > 1 && docTitlesObj[0].length > 1) {
+                        for (title in docTitlesObj) {
+                            var link = {};
+                            link.title = docTitlesObj[title];
+                            link.url = titleUrlBase + encodeURI(docTitlesObj[title]);
+                            if (link.title != "Thumbs.db") {
+                                TitleLinkCol.push(link);                            
+                            }
+                        }
+                        //  Only one modal can display at a time. Must ensure one hides before showing the other.
+                        $('#caseModal').on('hidden.bs.modal', function () { // set the listener before hiding
+                            Modal.show('docsModalTemplate',
+                                {                               
+                                    caseNum: caseNum,
+                                    docLinks: TitleLinkCol
+                                });
+                            $('#docsModal').on('hidden.bs.modal', function () { //  when user dismisses docsModal, show the case details again
+                                    showDetails();
+                            })
+                        });
+                        $('#caseModal').modal('hide');
+
+                        console.log('showing case ' + curCaseNum + ' document ' + TitleLinkCol[0].title);
+                        
+                    } else {    // in this case, we received a single error message, not an array of doc links
+                                //  NOTE: this may depend on an Thumbs.db being included in the list of documents
+                        alert(docTitlesObj);
+                    }
+                } else {
+                    if ((xmlhttp.readyState >= 0 && xmlhttp.readyState < 4) || xmlhttp.status == 404) {
+                        console.log("processing doc list request");
+                    }
+                    else if (xmlhttp.status != 200) {
+                        console.log("failed to retrieve documents for caseNumber " + curCaseNum +
+                                   "\nwith readyState = " + xmlhttp.readyState +
+                                   "\nand response: " + JSON.parse(xmlhttp.responseText));
+                    }
+                    return (null);
+                }
+            }
+            xmlhttp.open("GET", docURL + caseNum, true);
+            xmlhttp.send();
+        };
+    
     function showDetails(e) {
+        if ((e == null) || (e == undefined)) {
+            e = lastE;  // restore the event - called programmatically to restore to last button pressed state
+        };
+        lastE = e;
         caseNum =  e.feature.getProperty('CASE_NUMBE');
         addr = e.feature.getProperty('CASE_ADDRE');
         featureProperties = new Array();
@@ -109,13 +170,13 @@ if (Meteor.isClient) {
             }
         }
         Modal.show('caseModal', 
-            {
+            {                               
                 caseNum: caseNum,
                 featureProperties: featureProperties,
                 canSubscribeToProject: canSubscribe
             }
         );
-
+    
         $('.btn-subscribe-project').click(function(e){
             var subscribeButton = $(e.target);
             var caseNum = subscribeButton.data('casenumber');
@@ -131,18 +192,22 @@ if (Meteor.isClient) {
         // probably best as a backend search and a Mongo query
         //$("#modalHead").html("<h3>" + caseNum + "</h3>");
         // for each property, add an HTML paragraph
-        
-        $("#modalBody").slideDown("slow",function() {
-            $("#nav").show();
-            $(this).dblclick(function() {
-                $(this).slideUp("slow");
-                $("#nav").hide();
-            });
-            $("#close").click(function() {
-                $("#selDetails").slideUp("slow");
-                $("#nav").hide();
-            });
-        }); 
+    
+//        $("#modalBody").slideDown("slow",function() {
+//            $("#nav").show();
+//            $(this).dblclick(function() {
+//                $(this).slideUp("slow");
+//                $("#nav").hide();
+//            });
+//            $("#close").click(function() {
+//                $("#selDetails").slideUp("slow");
+//                $("#nav").hide();
+//            });
+//        }); 
+
+        $('.btn-show-docs').click(function() {
+            showDocs(caseNum);
+        });
     };
 
     Template.caseModal.helpers({
@@ -272,7 +337,7 @@ if (Meteor.isServer) {
 
             console.log("fbFeed = " + feedHtml.toString());
     };
-
+    
     Meteor.startup(function () {
         // code to run on server at startup
         // 1. Create a Mongo collection of properties (CASE_NUMBE's) by address from the GeoJSON file.
