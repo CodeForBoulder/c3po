@@ -17,7 +17,7 @@ if (Meteor.isClient) {
         console.log("Entered Meteor.startup");
         
         GoogleMaps.load();
-        console.log("Loaded GoogleMaps");
+        console.log("Loaded GoogleMap");
         
 
         
@@ -277,10 +277,11 @@ if (Meteor.isClient) {
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
             };*/
             //reviewCases.features = Cases.find().fetch();
-            Cases.find().map(function(reviewCase){
-                map.instance.data.addGeoJson(reviewCase);
-            });
+//            Cases.find().map(function(reviewCase){    // reviewCase has no polygon (GIS) information at all...
+//                map.instance.data.addGeoJson(reviewCase);
+//            });
             //map.instance.data.addGeoJson(reviewCases); // place json file in /public folder
+            map.instance.data.loadGeoJson('/DevelopmentReview.GeoJSON'); // place json file in /public folder
             map.instance.data.addListener('click', function(event) {
                 showDetails(event);
             });
