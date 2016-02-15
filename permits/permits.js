@@ -75,6 +75,10 @@ if (Meteor.isClient) {
 //        //         console.log("fbFeed = " + feedHtml.toString());
 //    };
 //
+    function openDisc(test){
+        console.log(test);
+    };
+
     function showDocs(curCaseNum) {
             //  Build document links array and invoke the docsModal.
             // 
@@ -208,6 +212,10 @@ if (Meteor.isClient) {
 
         $('.btn-show-docs').click(function() {
             showDocs(caseNum);
+        });
+
+        $('.btn-fb-discussion').click(function() {
+            openDisc('geronimo!!');
         });
     };
 

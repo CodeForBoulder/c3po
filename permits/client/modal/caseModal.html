@@ -16,7 +16,7 @@
             </tbody>
         	</table>
           <button type='button' class='btn btn-primary modal-btn btn-show-docs'>Docs</button>
-          <button type='button' class='btn btn-primary modal-btn'>Discuss</button>
+          <button type='button' class='btn btn-primary modal-btn btn-fb-discussion'>Discuss</button>
           {{#if canSubscribeToProject}}
           <button 
             type='button' 
@@ -24,6 +24,53 @@
             class='btn btn-primary modal-btn btn-subscribe-project'
           >Subscribe</button>
           {{/if}}
+
+            <button id="clicker2" class="btn btn-primary" onclick="repeater()">Introduce yourself on facebook:</button>
+
+    <script type="text/javascript">
+    function repeater(){
+
+        FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') {
+            // the user is logged in and has authenticated your
+            // app, and response.authResponse supplies
+            // the user's ID, a valid access token, a signed
+            // request, and the time the access token 
+            // and signed request each expire
+
+
+
+            // var uid = response.authResponse.userID;
+            // var accessToken = response.authResponse.accessToken;
+            // console.log('uid= ', uid);
+            // console.log('accessToken= ', accessToken);
+
+            FB.api('/boulderc3po/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()});
+
+            console.log('done');
+
+          } else if (response.status === 'not_authorized') {
+
+
+            console.log('not connected');
+            // the user is logged in to Facebook, 
+            // but has not authenticated your app
+          } else {
+
+            console.log('problem');
+            // the user isn't logged in to Facebook.
+          }
+         });
+
+      // ALTERNATELY THE FOLLOWING CODE INCLUDES LOG-IN OPTIONS
+
+      //   FB.login(function(test){
+      // // Note: The call will only work if you accept the permission request
+      //       FB.api('/boulderc3po/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()});
+      //   }, {scope: 'publish_actions'});
+
+    };
+    </script>
         </div>
 
         <div class="modal-footer">
