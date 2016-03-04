@@ -75,6 +75,10 @@ if (Meteor.isClient) {
 //        //         console.log("fbFeed = " + feedHtml.toString());
 //    };
 //
+    function openDisc(test){
+        console.log(test);
+    };
+
     function showDocs(curCaseNum) {
         "use strict";
 
@@ -145,18 +149,6 @@ if (Meteor.isClient) {
         xmlhttp.send();
     }
     
-/*
-//    function geoJSONtoLatLng(jsonArray) {
-//        "use strict";
-//        var latLngArray = [];
-//        for (var p = 0; p < jsonArray[0].length; p++) {
-//            var point = new google.maps.LatLng(jsonArray[0][p][0], jsonArray[0][p][1]);
-//            latLngArray.push(point);
-//        }
-//        return latLngArray;
-//    }
-*/
-    
     function showDetails(e) {
         
         function launchModal() {
@@ -192,7 +184,6 @@ if (Meteor.isClient) {
             $('.btn-subscribe-project').click(function(e){
                 var subscribeButton = $(e.target);
                 var caseNum = Session.get('caseNum');
-//                var caseNum = subscribeButton.data('casenumber');
                 var permit = Cases.findOne({id: caseNum});
                 var currentUser = Meteor.user();
                 var userSubscriptions = currentUser.profile.subscriptions;
@@ -204,18 +195,19 @@ if (Meteor.isClient) {
             $('.btn-show-docs').click(function(e) {
                 var showDocsButton = $(e.target);
                 var caseNum = Session.get('caseNum');
-//                var caseNum = showDocsButton.data('casenumber');
                 showDocs(caseNum);
+            });
+
+            $('.btn-fb-discussion').click(function() {
+                openDisc('geronimo!!');
             });
         }
         "use strict";
         var curCaseInd;
         if ((e === null) || (e === undefined)) {
-//            e = lastE;  // restore the event - called programmatically to restore to last button pressed state
             // now, don't bother searching the polygons, just pop the modal with the session data
             launchModal();
         } else {
-//            lastE = e;
             selCases = [];
             // Cycle through the polygons on the map to see which ones contain the clicked latLng.
             GoogleMaps.maps.map.instance.data.forEach(function(item) {
@@ -226,7 +218,7 @@ if (Meteor.isClient) {
                 var select = false;
 
                 // For whatever reason, the polygons read in from GeoJSON are not compatible with the
-                // containsLocation() function.
+                // containsLocation() function. A maps polygon is not the same as a maps.data polygon.
                 // We have to create a simple polygon from the array of latLng's in the current 
                 // item, which is a map feature that may or may not be a polygon.
                 // The paths param property must be an array of latLng objects or literals
@@ -261,9 +253,6 @@ if (Meteor.isClient) {
                         item.setProperty('canSubscribe', jQuery.inArray(item.getId(), currentUser.profile.subscriptions) < 0);
                     }
                 };
-//                for (var c = 0; c < selCases.length; c++) {
-//                    console.log("Selected " + c + " " + selCases[c].caseId);
-//                }
             }); // end map.instance.data.forEach() iteration
             console.log("selected " + selCases ? selCases.length : 0 + " cases at " + e.latLng.lat + " " + e.latLng.lng);
             // Show a modal for all selCases, showing the first one found
@@ -355,7 +344,6 @@ if (Meteor.isClient) {
         function addToMap(jsonCase, map) {
             var curFeature = map.instance.data.addGeoJson(jsonCase);
             curFeature[0].setProperty('canSubscribe', true);  
-//            console.log("added "+curFeature[0].getId());
         }
 
         GoogleMaps.ready('map', function(map) {
