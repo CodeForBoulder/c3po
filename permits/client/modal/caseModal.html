@@ -8,14 +8,17 @@
         <div class="modal-body" id="modalBody">
         	<table class="table table-striped" id="modalTable">
         		<tbody id="modalTableData">
-              {{#each featureProperties}}
+              {{#each arrayify featureProperties}}
               <tr>
-                <td class='case-property'>{{humanReadableName name}}:</td><td>{{val}}</td>
+                <td class='case-property'>{{humanReadableName name}}:</td><td>{{value}}</td>
               </tr>
               {{/each}}
             </tbody>
         	</table>
-          <button type='button' class='btn btn-primary modal-btn btn-show-docs'>Docs</button>
+          <button type='button' 
+                  class='btn btn-primary modal-btn btn-show-docs'
+                  data-casenumber={{caseNum}}
+                  >Docs</button>
           <button type='button' class='btn btn-primary modal-btn'>Discuss</button>
           {{#if canSubscribeToProject}}
           <button 
@@ -25,8 +28,20 @@
           >Subscribe</button>
           {{/if}}
         </div>
-
+<!--
+                var caseNum = prevButton.data('casenumber');
+                var featureProperties = prevButton.data('properties');
+                var canSubscribeToProject = prevButton.data('cansubscribe')
+ -->
         <div class="modal-footer">
+            <button type="button" id="btn-prev" class="btn"
+                    data-casenumber='{{caseNum}}'
+                    data-properties='{{featureProperties}}'
+                    data-cansubscribe='{{canSubscribeToProject}}'>Prev</button>
+            <button type="button" id="btn-next" class="btn"
+                    data-casenumber='{{caseNum}}'
+                    data-properties='{{featureProperties}}'
+                    data-cansubscribe='{{canSubscribeToProject}}'>Next</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
 

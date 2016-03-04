@@ -1,22 +1,24 @@
 // Collection for all the cases defined in the DevelopmentReview.GeoJSON file
-Cases = new Mongo.Collection("cases");
+var Cases = new Mongo.Collection("cases");
+var CasePlats = new Mongo.Collection("plats");
 var devCases = {};
 var MAP_ZOOM = 15;
-var curAppId ;
+var curAppId;
 
 if (Meteor.isClient) {
     var TitleLinkRes = [{}];
     var lastE = {};
+    var selCases = [];
 
     // counter starts at 0
     Session.setDefault('counter', 0);
+    // todo: consider adding a listener to detectd when more Cases added
     
-//    Meteor.subscribe("all-cases");
-    
-    Meteor.startup(function() {
+    Meteor.startup(function () {
+        "use strict";
         console.log("Entered Meteor.startup");
         
-        GoogleMaps.load();
+        GoogleMaps.load({libraries: 'geometry'});
         console.log("Loaded GoogleMap");
         
 
@@ -54,12 +56,10 @@ if (Meteor.isClient) {
     
         $("#selDocs").slideUp("fast");
         $("#nav").slideUp("fast");
-        
 
         /* set appId for Facebook integration */
         /* First works with ManUnderhill's localhost, second with cfbc3po.meteor.com */
         /* as registered Facebook Apps */
-        
 
         var curHref = location.href;
         console.log("Obtained curHref = " + curHref);
@@ -69,13 +69,15 @@ if (Meteor.isClient) {
 //        curAppId = '109055546115993';
 //        $(".fb-like").attr("data-href",curHref);
         console.log("Leaving Meteor.startup");
-                });
+    });
 //        $("#fbFeed").html("new value");
 //
 //        //         console.log("fbFeed = " + feedHtml.toString());
 //    };
 //
     function showDocs(curCaseNum) {
+        "use strict";
+
             //  Build document links array and invoke the docsModal.
             // 
             //  GET https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=LUR2013-00070
@@ -84,164 +86,248 @@ if (Meteor.isClient) {
             // Then display the links by appending the titles to:
             //   "https://www-static.bouldercolorado.gov/docs/PDS/plans/"+caseNum+"/"
             //
-            var TitleLinkCol = [];
+        var TitleLinkCol = [],
+            xmlhttp,
+            docURL = "https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=";
 
-            var xmlhttp;
-            var docURL = "https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=";
-
-            if (window.XMLHttpRequest) {
-                xmlhttp = new XMLHttpRequest();
-            } else {
-                // code for older browsers
-                xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    var docTitles = xmlhttp.responseText;
-                    // response text is a JSON string that needs to be parsed...
-                    var docTitlesObj = JSON.parse(docTitles);
-                    var titleUrlBase = "https://www-static.bouldercolorado.gov/docs/PDS/plans/"+curCaseNum+"/";
-                    if (docTitlesObj.length > 1 && docTitlesObj[0].length > 1) {
-                        for (title in docTitlesObj) {
-                            var link = {};
-                            link.title = docTitlesObj[title];
-                            link.url = titleUrlBase + encodeURI(docTitlesObj[title]);
-                            if (link.title != "Thumbs.db") {
-                                TitleLinkCol.push(link);                            
-                            }
+        if (window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            // code for older browsers
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                var docTitles = xmlhttp.responseText,
+                // response text is a JSON string that needs to be parsed...
+                    docTitlesObj = EJSON.parse(docTitles),
+                    titleUrlBase = "https://www-static.bouldercolorado.gov/docs/PDS/plans/" + curCaseNum + "/";
+                if (docTitlesObj.length > 1 && docTitlesObj[0].length > 1) {
+                    for (var title in docTitlesObj) {
+                        var link = {};
+                        link.title = docTitlesObj[title];
+                        link.url = titleUrlBase + encodeURI(docTitlesObj[title]);
+                        if (link.title !== "Thumbs.db") {
+                            TitleLinkCol.push(link);
                         }
-                        //  Only one modal can display at a time. Must ensure one hides before showing the other.
-                        $('#caseModal').on('hidden.bs.modal', function () { // set the listener before hiding
-                            Modal.show('docsModalTemplate',
-                                {                               
-                                    caseNum: caseNum,
-                                    docLinks: TitleLinkCol
-                                });
-                            $('#docsModal').on('hidden.bs.modal', function () { //  when user dismisses docsModal, show the case details again
-                                    showDetails();
-                            })
+                    }
+                    //  Only one modal can display at a time. Must ensure one hides before showing the other.
+                    $('#caseModal').on('hidden.bs.modal', function () { // set the listener before hiding
+                        Modal.show('docsModalTemplate',
+                            {
+                                caseNum: curCaseNum,
+                                docLinks: TitleLinkCol
+                            });
+                        $('#docsModal').on('hidden.bs.modal', function () {
+                            //  when user dismisses docsModal, show the case details again
+                            showDetails();
                         });
-                        $('#caseModal').modal('hide');
-
-                        console.log('showing case ' + curCaseNum + ' document ' + TitleLinkCol[0].title);
-                        
-                    } else {    // in this case, we received a single error message, not an array of doc links
-                                //  NOTE: this may depend on an Thumbs.db being included in the list of documents
-                        alert(docTitlesObj);
-                    }
+                    });
+                    $('#caseModal').modal('hide');
+                    console.log('showing case ' + curCaseNum + ' document ' + TitleLinkCol[0].title);
                 } else {
-                    if ((xmlhttp.readyState >= 0 && xmlhttp.readyState < 4) || xmlhttp.status == 404) {
-                        console.log("processing doc list request");
-                    }
-                    else if (xmlhttp.status != 200) {
-                        console.log("failed to retrieve documents for caseNumber " + curCaseNum +
-                                   "\nwith readyState = " + xmlhttp.readyState +
-                                   "\nand response: " + JSON.parse(xmlhttp.responseText));
-                    }
-                    return (null);
+                    // in this case, we received a single error message, not an array of doc links
+                    //  NOTE: this may depend on an Thumbs.db being included in the list of documents
+                    alert(docTitlesObj);
                 }
+            } else {
+                if ((xmlhttp.readyState >= 0 && xmlhttp.readyState < 4) || xmlhttp.status === 404) {
+                    console.log("processing doc list request");
+                } else if (xmlhttp.status !== 200) {
+                    console.log("failed to retrieve documents for caseNumber " + curCaseNum +
+                                "\nwith readyState = " + xmlhttp.readyState +
+                                "\nand response: " + EJSON.parse(xmlhttp.responseText));
+                }
+                return (null);
             }
-            xmlhttp.open("GET", docURL + caseNum, true);
-            xmlhttp.send();
         };
+        xmlhttp.open("GET", docURL + curCaseNum, true);
+        xmlhttp.send();
+    }
+    
+/*
+//    function geoJSONtoLatLng(jsonArray) {
+//        "use strict";
+//        var latLngArray = [];
+//        for (var p = 0; p < jsonArray[0].length; p++) {
+//            var point = new google.maps.LatLng(jsonArray[0][p][0], jsonArray[0][p][1]);
+//            latLngArray.push(point);
+//        }
+//        return latLngArray;
+//    }
+*/
     
     function showDetails(e) {
-        if ((e == null) || (e == undefined)) {
-            e = lastE;  // restore the event - called programmatically to restore to last button pressed state
-        };
-        lastE = e;
-        caseNum =  e.feature.getProperty('CASE_NUMBE');
-        addr = e.feature.getProperty('CASE_ADDRE');
-        featureProperties = new Array();
-        e.feature.forEachProperty(function (val, name) {
-            featureProperties.push({val: val, name: name});
-        });
-        var permit = Cases.findOne({"properties.CASE_NUMBE": caseNum});
-        var canSubscribe = true;
-        var currentUser = Meteor.user();
-        if(currentUser == null) {
-            canSubscribe = false;
-        } else {
-            if(currentUser !== null && currentUser.profile.subscriptions === undefined) {
-                Meteor.users.update(Meteor.userId(), {$set: {'profile.subscriptions': new Array()}});
-            }
-            if(currentUser !== null) {
-                canSubscribe = jQuery.inArray(caseNum, currentUser.profile.subscriptions) < 0;
-            }
+        
+        function launchModal() {
+
+            Modal.show('caseModal')
+
+            $('#btn-prev').click(function(e) {
+                var curCaseInd = Session.get('caseInd');
+                if (curCaseInd -1 >= 0) {
+                    curCaseInd--;
+                    Session.set({
+                        caseInd: curCaseInd,
+                        caseNum: selCases[curCaseInd].caseId,
+                        featureProperties: Cases.findOne({id: selCases[curCaseInd].caseId}).properties,
+                        canSubscribeToProject: selCases[curCaseInd].canSubscribe
+                    })
+                }
+            });
+
+            $('#btn-next').click(function(e) {
+                var curCaseInd = Session.get('caseInd');
+                if (curCaseInd +1 < selCases.length) {
+                    curCaseInd++;
+                    Session.set({
+                        caseInd: curCaseInd,
+                        caseNum: selCases[curCaseInd].caseId,
+                        featureProperties: Cases.findOne({id: selCases[curCaseInd].caseId}).properties,
+                        canSubscribeToProject: selCases[curCaseInd].canSubscribe
+                    })
+                }            
+            });
+
+            $('.btn-subscribe-project').click(function(e){
+                var subscribeButton = $(e.target);
+                var caseNum = Session.get('caseNum');
+//                var caseNum = subscribeButton.data('casenumber');
+                var permit = Cases.findOne({id: caseNum});
+                var currentUser = Meteor.user();
+                var userSubscriptions = currentUser.profile.subscriptions;
+                userSubscriptions.push(caseNum);
+                Meteor.users.update(Meteor.userId(), {$set: {'profile.subscriptions': userSubscriptions}});
+                subcribeButton.hide();
+            });
+
+            $('.btn-show-docs').click(function(e) {
+                var showDocsButton = $(e.target);
+                var caseNum = Session.get('caseNum');
+//                var caseNum = showDocsButton.data('casenumber');
+                showDocs(caseNum);
+            });
         }
-        Modal.show('caseModal', 
-            {                               
-                caseNum: caseNum,
-                featureProperties: featureProperties,
-                canSubscribeToProject: canSubscribe
-            }
-        );
-    
-        $('.btn-subscribe-project').click(function(e){
-            var subscribeButton = $(e.target);
-            var caseNum = subscribeButton.data('casenumber');
-            var permit = Cases.findOne({"properties.CASE_NUMBE": caseNum});
-            var currentUser = Meteor.user();
-            var userSubscriptions = currentUser.profile.subscriptions;
-            userSubscriptions.push(caseNum);
-            Meteor.users.update(Meteor.userId(), {$set: {'profile.subscriptions': userSubscriptions}});
-            subscribeButton.hide();
-        });
+        "use strict";
+        var curCaseInd;
+        if ((e === null) || (e === undefined)) {
+//            e = lastE;  // restore the event - called programmatically to restore to last button pressed state
+            // now, don't bother searching the polygons, just pop the modal with the session data
+            launchModal();
+        } else {
+//            lastE = e;
+            selCases = [];
+            // Cycle through the polygons on the map to see which ones contain the clicked latLng.
+            GoogleMaps.maps.map.instance.data.forEach(function(item) {
+                "use strict";
+                var numPolys = 1;
+                var curGeom = item.getGeometry();
+                var candidate = {};
+                var select = false;
 
-        // redo to allow for multiple cases
-        // find all the cases matching the address of the selected case
-        // probably best as a backend search and a Mongo query
-        //$("#modalHead").html("<h3>" + caseNum + "</h3>");
-        // for each property, add an HTML paragraph
-    
-//        $("#modalBody").slideDown("slow",function() {
-//            $("#nav").show();
-//            $(this).dblclick(function() {
-//                $(this).slideUp("slow");
-//                $("#nav").hide();
-//            });
-//            $("#close").click(function() {
-//                $("#selDetails").slideUp("slow");
-//                $("#nav").hide();
-//            });
-//        }); 
+                // For whatever reason, the polygons read in from GeoJSON are not compatible with the
+                // containsLocation() function.
+                // We have to create a simple polygon from the array of latLng's in the current 
+                // item, which is a map feature that may or may not be a polygon.
+                // The paths param property must be an array of latLng objects or literals
 
-        $('.btn-show-docs').click(function() {
-            showDocs(caseNum);
-        });
+                if (curGeom.getType().indexOf("MultiPolygon") > -1) {
+                    numPolys = curGeom.getLength();
+                    for (var p = 0; p < numPolys; p++) { // todo: getArray() or getPaths() will work better?
+                        for (var pp = 0; pp < curGeom.getAt(p).getLength(); pp++) {
+                            candidate = new google.maps.Polygon({paths: curGeom.getAt(p).getArray()[pp].getArray()});
+                            select = google.maps.geometry.poly.containsLocation(e.latLng, candidate) || select
+                        }
+                    }
+                } else {
+                    for (var p = 0; p < curGeom.getArray().length; p++) {
+                        var candidate = new google.maps.Polygon({paths: curGeom.getArray()[p].getArray()});
+                        select = google.maps.geometry.poly.containsLocation(e.latLng, candidate) ||
+                            select;
+                    }
+                }
+                if (select) {
+                    selCases.push({caseId: item.getId(),
+                                   canSubscribe: item.getProperty('canSubscribe')});
+                }
+                var currentUser = Meteor.user();
+                if(currentUser == null) {
+                    item.setProperty('canSubscribe', false);
+                } else {
+                    if(currentUser !== null && currentUser.profile.subscriptions === undefined) {
+                        Meteor.users.update(Meteor.userId(), {$set: {'profile.subscriptions': new Array()}});
+                    }
+                    if(currentUser !== null) {
+                        item.setProperty('canSubscribe', jQuery.inArray(item.getId(), currentUser.profile.subscriptions) < 0);
+                    }
+                };
+//                for (var c = 0; c < selCases.length; c++) {
+//                    console.log("Selected " + c + " " + selCases[c].caseId);
+//                }
+            }); // end map.instance.data.forEach() iteration
+            console.log("selected " + selCases ? selCases.length : 0 + " cases at " + e.latLng.lat + " " + e.latLng.lng);
+            // Show a modal for all selCases, showing the first one found
+            if (selCases && selCases.length > 0) {
+                curCaseInd = 0;
+                Session.set({                               
+                    caseInd: curCaseInd,
+                    caseNum: selCases[curCaseInd].caseId,
+                    featureProperties: Cases.findOne({id: selCases[curCaseInd].caseId}).properties,
+                    canSubscribeToProject: selCases[curCaseInd].canSubscribe
+                })
+                launchModal();
+            };
+        }
     };
+
+    Template.registerHelper('arrayify',function(obj){
+        result = [];
+        for (var key in obj) result.push({name:key,value:obj[key]});
+        return result;
+    });
 
     Template.caseModal.helpers({
         humanReadableName: function(name) {
+            "use strict";
             switch(name) {
-        case "CASE_NUMBE":
-          return "Case Number";
-        case "CASE_TYPE":
-          return "Type";
-        case "APPLICANT_":
-          return "Applicant";
-        case "CASE_ADDRE":
-          return "Address";
-        case "CASE_DESCR":
-          return "Description";
-        case "STAFF_EMAI":
-          return "Email";
-        case "STAFF_PHON":
-          return "Phone";
-        case "STAFF_CONT":
-          return "Contact";
-      }
+                case "CASE_NUMBE":
+                  return "Case Number";
+                case "CASE_TYPE":
+                  return "Type";
+                case "APPLICANT_":
+                  return "Applicant";
+                case "CASE_ADDRE":
+                  return "Address";
+                case "CASE_DESCR":
+                  return "Description";
+                case "STAFF_EMAI":
+                  return "Email";
+                case "STAFF_PHON":
+                  return "Phone";
+                case "STAFF_CONT":
+                  return "Contact";
+            }
+        },
+        caseNum: function() {
+            return Session.get('caseNum');
+        },
+        featureProperties: function () {
+            return Session.get('featureProperties');
+        },
+        canSubscribeToProject: function () {
+            return Session.get('canSubscribeToProject');
         }
     });
 
     Template.map.helpers({
         geolocationError: function() {
+            "use strict";
             console.log("in geolocationError()");
             var error = Geolocation.error();
             return error && error.message;
         },
         mapOptions: function() {
-            
+            "use strict";
             var latLng = Geolocation.latLng();
             // Initialize the map once we have the latLng.
             console.log("in mapOptions -- DISABLED");
@@ -265,61 +351,57 @@ if (Meteor.isClient) {
     });
 
     Template.map.onCreated(function() {
+        
+        function addToMap(jsonCase, map) {
+            var curFeature = map.instance.data.addGeoJson(jsonCase);
+            curFeature[0].setProperty('canSubscribe', true);  
+//            console.log("added "+curFeature[0].getId());
+        }
+
         GoogleMaps.ready('map', function(map) {
-            console.log("onCreated - latlng = " + JSON.stringify(latLng) + " DISABLED");
+            
             var latLng = Geolocation.latLng() || {center: { lat: 40.0275, lng: -105.251945}, zoom: MAP_ZOOM};
             var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(latLng.lat, latLng.lng),
                 map: map.instance
             });
-            /*var reviewCases = {
-"type": "FeatureCollection",
-"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
-            };*/
-            //reviewCases.features = Cases.find().fetch();
-//            Cases.find().map(function(reviewCase){    // reviewCase has no polygon (GIS) information at all...
-//                map.instance.data.addGeoJson(reviewCase);
-//            });
-            //map.instance.data.addGeoJson(reviewCases); // place json file in /public folder
-            map.instance.data.loadGeoJson('/DevelopmentReview.GeoJSON'); // place json file in /public folder
+            map.instance.data.setStyle({  // can use dynamic fillColor per case type using anonymous function
+                strokeColor: '#999999',
+                strokeOpacity: 0.2,
+                strokeWeight: 2,
+                fillColor: '#333333',
+                fillOpacity: 0.2,
+                clickable: true
+              });
+
+            Meteor.subscribe("all-cases", {
+                onReady: function() {
+                    Cases.find({}).forEach(function(reviewCase){
+                        addToMap(reviewCase, map);
+                        })
+                }
+            });
             map.instance.data.addListener('click', function(event) {
                 showDetails(event);
             });
         });
     });
-    
 
-//    Template.fbbtn.onRendered(function() {
-//        console.log("Entered fbbtn.onRendered()");
-//
-//        try {
-//            FB.XFBML.parse();
-//        }catch(e) {};
-//
-//
-//        console.log("Leaving fbbtn.onRendered()");
-//    });
-//   
-//    
-//   
-//    Template.facebookPost.onRendered(function() {
-//        console.log("facebookPost.onRendered()");
-//        try {
-//            FB.XFBML.parse();
-//        }catch(e) {}   
-//    });
-
-};
+}; // end: Meteor.isClient()
 
 if (Meteor.isServer) {
-    
+
+    Meteor.publish("all-cases", function () {
+        return Cases.find({}); // everything
+    });
+
     function serverFeed() {
+        "use strict";
         // Todo:
         //    1. Get admin's account info, use page key to post to the feed
         //    2. Get this into the js file!
         //
         console.log("Entering serverFeed()");
-
         var pageAccessToken = "1459289887712466|4gmChmzJ2gEpYNJR38jK6g0Leuw";
         FB.api('/109055546115993/accounts','get',function(response) {
             if (!response || response.error) {
@@ -328,42 +410,70 @@ if (Meteor.isServer) {
                 alert('Page access for app (accounts object):\n' + response);
             };
         });
-
-        
-
         var feedHtml = FB.api('/914491901967402/feed','post',
                               {message: 'Autoposted from server on startup',
                                access_token: pageAccessToken
                               },
-                              function(response) {
-            if (!response || response.error) {
-                alert('Error occured: ' + response.error);
-                feedHtml = "Error occurred: " + response.error.message;
-                console.log("fbFeed error: " + feedHtml);
-            } else {
-                alert('Post ID: ' + response.id);
-            }
+            function(response) {
+                if (!response || response.error) {
+                    alert('Error occured: ' + response.error);
+                    feedHtml = "Error occurred: " + response.error.message;
+                    console.log("fbFeed error: " + feedHtml);
+                } else {
+                    alert('Post ID: ' + response.id);
+                }
             });
-
             console.log("fbFeed = " + feedHtml.toString());
     };
     
     Meteor.startup(function () {
+        "use strict";
         // code to run on server at startup
         // 1. Create a Mongo collection of properties (CASE_NUMBE's) by address from the GeoJSON file.
         // 2. Build a Mongo collection of documents for each property
         //     These are stored in https://www-static.bouldercolorado.gov/docs/PDS/Plans/<CASE_NUMBE>/ folder
         // 3. Build a Mongo collection of features for each CASE_NUMBE
-//        devCases = HTTP.get(Meteor.absoluteUrl("/DevelopmentReview.GeoJSON")).data;
-        devCases = JSON.parse(Assets.getText("DevelopmentReview.GeoJSON"));        // load the GeoJSON
-        for (devCaseIndex in devCases.features) {
-           var properties = devCases.features[devCaseIndex].properties;
-           if(Cases.find({'properties.CASE_NUMBE': properties['CASE_NUMBE']}, {limit:1}).count() < 1)
-              devCases.features[devCaseIndex]._id = properties['CASE_NUMBE'];
-              Cases.insert(devCases.features[devCaseIndex]);
-        }
-        Meteor.publish("all-cases", function () {
-            return Cases.find(); // everything
+
+        var Fiber = Npm.require( "fibers" );
+        
+        // read and process line-by-line
+        
+        var lineReader = Npm.require('readline').createInterface({
+            input: Npm.require('fs').createReadStream('assets/app/DevelopmentReview.GeoJSON'),
+            terminal: false
+        });
+        
+        lineReader.on('line', function(line) {
+            "use strict";
+            Fiber( function() {
+                var caseNum = "";
+                var devCase = {};
+                try {
+                    if (line[line.length-1] == ',') { // chop off any trailing comma after the object
+                        line = line.substr(0,line.length -1);
+                    };
+                    devCase = (EJSON.parse(line));
+                    caseNum = devCase.properties['CASE_NUMBE'];
+                    if(Cases.findOne({'id': caseNum}) == null) {
+                        devCase['_id'] = caseNum;
+                        devCase['id'] = caseNum;
+//                        console.log(devCase['id']);
+                        Cases.insert(devCase);
+                    };
+                }
+                catch(err) {
+                    if ((err.message.indexOf("SyntaxError")) < 0) {
+                        console.error(caseNum + " Error on parsing JSON for " + line.slice(52,65) + ": " + err.message);
+                    };
+                };
+                Fiber.yield();
+            }).run();
+        });
+        
+        lineReader.on('close', function(line) {
+            "use strict";
+            // process last line
+            console.error(' Read last line: ...');            
         });
     });
 };
