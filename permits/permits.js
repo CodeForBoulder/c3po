@@ -1,11 +1,11 @@
-// Collection for all the cases defined in the DevelopmentReview.GeoJSON file
-var Cases = new Mongo.Collection("cases");
-var CasePlats = new Mongo.Collection("plats");
+//var CasePlats = new Mongo.Collection("plats");
 var devCases = {};
 var MAP_ZOOM = 15;
 var curAppId;
 
 if (Meteor.isClient) {
+    // Collection for all the cases defined in the DevelopmentReview.GeoJSON file
+    var Cases = new Mongo.Collection("cases");
     var TitleLinkRes = [{}];
     var lastE = {};
     var selCases = [];
@@ -379,6 +379,9 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
 
+    // Collection for all the cases defined in the DevelopmentReview.GeoJSON file
+    var Cases = new Mongo.Collection("cases");
+
     Meteor.publish("all-cases", function () {
         return Cases.find({}); // everything
     });
@@ -422,20 +425,51 @@ if (Meteor.isServer) {
         //     These are stored in https://www-static.bouldercolorado.gov/docs/PDS/Plans/<CASE_NUMBE>/ folder
         // 3. Build a Mongo collection of features for each CASE_NUMBE
 
+        
+        function getAssetPath() {
+            var meteor_root = Npm.require('fs').realpathSync(process.cwd() + '/../');
+            
+            console.log(meteor_root);
+            
+//            var assets_folder = __meteor_bootstrap__.serverDir + '/assets/app';
+            
+            // /meteor/containers/b98c25e5-4e38-5531-cc67-85a5a29c68dc/bundle/programs/server/boot.js:229:5
+
+            var application_root = Npm.require('fs').realpathSync(meteor_root + '/../');
+            // if running on dev mode
+            if (Npm.require('path').basename(Npm.require('fs').realpathSync(meteor_root + '/../../../')) == '.meteor') {
+                application_root = Npm.require('fs').realpathSync(meteor_root + '/../../../../');
+                var assets_folder = meteor_root + '/server/assets/' + Npm.require('path').basename( application_root );
+            }
+
+            var assets_folder = meteor_root + '/server/assets/app';
+            //var assets_folder = meteor_root + '/server/assets/' + Npm.require('path').basename( application_root );
+            console.log(assets_folder);
+            return assets_folder;
+        }   
+        
         var Fiber = Npm.require( "fibers" );
         
         // read and process line-by-line
         
+        var assetPath = getAssetPath();
+        
+        Assets.getBinary('DevelopmentReview.GeoJSON');
+        
+//            input: Npm.require('fs').createReadStream('/assets/app/DevelopmentReview.GeoJSON'),
         var lineReader = Npm.require('readline').createInterface({
-            input: Npm.require('fs').createReadStream('assets/app/DevelopmentReview.GeoJSON'),
+            input: Npm.require('fs').createReadStream(assetPath + '/DevelopmentReview.GeoJSON'),
             terminal: false
         });
         
+        console.error("declared lineReader");
+        
         lineReader.on('line', function(line) {
-            "use strict";
+//            console.log("about to open a Fiber");
             Fiber( function() {
                 var caseNum = "";
                 var devCase = {};
+//                console.error("about to try a line parse");
                 try {
                     if (line[line.length-1] == ',') { // chop off any trailing comma after the object
                         line = line.substr(0,line.length -1);
@@ -458,10 +492,18 @@ if (Meteor.isServer) {
             }).run();
         });
         
+//        console.log("after lineReader.on callback");
+        
         lineReader.on('close', function(line) {
-            "use strict";
+            try {
+                console.log("read last line\n" + line);
+            }
+            catch(err) {
+                console.error("error reading last line or opened with end of file\n" + err);
+                };
             // process last line
             console.error(' Read last line: ...');            
         });
+//        console.log("after lineReader on close");
     });
 };
