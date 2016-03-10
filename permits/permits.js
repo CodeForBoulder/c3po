@@ -25,17 +25,17 @@ if (Meteor.isClient) {
         
 // c3poDev for localhost:3000 operation
 
-        // set up Facebook sdk
+//         set up Facebook sdk
 
-//        $("#feed").click(function () {
-//            serverFeed()
-//            console.log("in #feed.click()");
-//        });
-//        Accounts.ui.config({
-//            requestPermissions: {
-//                facebook: ['publish_actions']
-//            }
-//        });
+        $("#feed").click(function () {
+            serverFeed()
+            console.log("in #feed.click()");
+        });
+        Accounts.ui.config({
+            requestPermissions: {
+                facebook: ['publish_actions']
+            }
+        });
         
 //    window.fbAsyncInit = function() {
 //        console.log("About to call FB.init");
@@ -106,12 +106,15 @@ if (Meteor.isClient) {
                 // response text is a JSON string that needs to be parsed...
                     docTitlesObj = EJSON.parse(docTitles),
                     titleUrlBase = "https://www-static.bouldercolorado.gov/docs/PDS/plans/" + curCaseNum + "/";
-                if (docTitlesObj.length > 1 && docTitlesObj[0].length > 1) {
+                if (Array.isArray(docTitlesObj)) {
+                    // todo: handle case where 1 document is available and no thumbs.db exists.
+                    //      Because of cross-domain restrictions, we cannoc check for existence of the file, 
+                    //      so the best we may be able to do is filter by extension (e.g. 'pdf').
                     for (var title in docTitlesObj) {
                         var link = {};
                         link.title = docTitlesObj[title];
                         link.url = titleUrlBase + encodeURI(docTitlesObj[title]);
-                        if (link.title !== "Thumbs.db") {
+                        if (link.title !== "Thumbs.db" && link.title.endsWith('.pdf')) {
                             TitleLinkCol.push(link);
                         }
                     }
@@ -132,7 +135,11 @@ if (Meteor.isClient) {
                 } else {
                     // in this case, we received a single error message, not an array of doc links
                     //  NOTE: this may depend on an Thumbs.db being included in the list of documents
-                    alert(docTitlesObj);
+                    if (docTitlesObj.endsWith('.pdf')) {
+                        TitleLinkCol.push(docTitlesObj);
+                    } else {
+                        alert(docTitlesObj);
+                    }
                 }
             } else {
                 if ((xmlhttp.readyState >= 0 && xmlhttp.readyState < 4) || xmlhttp.status === 404) {
@@ -158,7 +165,15 @@ if (Meteor.isClient) {
             $('#btn-prev').click(function(e) {
                 var curCaseInd = Session.get('caseInd');
                 if (curCaseInd -1 >= 0) {
+                    if (curCaseInd === selCases.length - 1) {
+                        $('#btn-next').removeClass('disabled');
+                    }
                     curCaseInd--;
+                    if (curCaseInd === 0) { // disable only when first item reached
+                        $(this).addClass('disabled');
+                    } else if ($(this).hasClass('disabled')) {
+                        $(this).removeClass('disabled');
+                    }
                     Session.set({
                         caseInd: curCaseInd,
                         caseNum: selCases[curCaseInd].caseId,
@@ -172,6 +187,14 @@ if (Meteor.isClient) {
                 var curCaseInd = Session.get('caseInd');
                 if (curCaseInd +1 < selCases.length) {
                     curCaseInd++;
+                    if (curCaseInd >= selCases.length - 1) {   // disable only when last item reached
+                        $(this).addClass('disabled');
+                    } else if ($(this).hasClass('disabled')) {
+                        $(this).removeClass('disabled');
+                    }
+                    if (selCases.length > 1 && curCaseInd === 1) {
+                        $('#btn-prev').removeClass('disabled');
+                    }
                     Session.set({
                         caseInd: curCaseInd,
                         caseNum: selCases[curCaseInd].caseId,
@@ -476,7 +499,7 @@ if (Meteor.isServer) {
                     };
                     devCase = (EJSON.parse(line));
                     caseNum = devCase.properties['CASE_NUMBE'];
-                    if(Cases.findOne({'id': caseNum}) == null) {
+                    if(Cases.findOne({'_id': caseNum}) == null) {
                         devCase['_id'] = caseNum;
                         devCase['id'] = caseNum;
 //                        console.log(devCase['id']);

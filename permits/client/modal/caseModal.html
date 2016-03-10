@@ -48,9 +48,21 @@
             // console.log('uid= ', uid);
             // console.log('accessToken= ', accessToken);
 
-            FB.api('/boulderc3po/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()});
+              // localhost  109055546115993  c3poDev page id = 914491901967402
+              // , {scope: 'publish_actions'}
+//            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()},function(response){
+                // meteor.com
+//            FB.api('/e: 'publish_actions'}
+            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()},{scope: 'publish_actions'});
+//              function(response){
+//                if (!response || response.error) {
+//                    console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
+//                } else {
+//                    console.log('post id = ' + response);
+//                }
+//            });
 
-            console.log('done');
+            console.log('done' + FB.getUserID());
 
           } else if (response.status === 'not_authorized') {
 
@@ -76,7 +88,7 @@
     </script>
         </div>
         <div class="modal-footer">
-            <button type="button" id="btn-prev" class="btn"
+            <button type="button" id="btn-prev" class="btn disabled"
                     data-casenumber='{{caseNum}}'
                     data-properties='{{featureProperties}}'
                     data-cansubscribe='{{canSubscribeToProject}}'>Prev</button>
