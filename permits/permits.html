@@ -24,9 +24,9 @@
   js = d.createElement(s); js.id = id;
 // 212034485818098
     // cfbc3po.meteor.com
-    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=212034485818098";
+//    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=212034485818098";
     // localhost:3000
-//    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=109055546115993";
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=109055546115993";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
     <script>
@@ -86,9 +86,9 @@
         </div>
         <div id="discuss">
             <!-- localhost:3000 -->
-<!--            <div class="fb-comments" data-href="https://www.facebook.com/c3podev/" data-width="300" data-numposts="2">-->
+            <div class="fb-comments" data-href="https://www.facebook.com/c3podev/" data-width="300" data-numposts="2">
             <!-- cfbc3po.meteor.com -->
-            <div class="fb-comments" data-href="https://www.facebook.com/c3poboulder/" data-width="300" data-numposts="2">
+<!--            <div class="fb-comments" data-href="https://www.facebook.com/c3poboulder/" data-width="300" data-numposts="2">-->
             </div>
         </div>
     </div>
@@ -103,7 +103,7 @@
             Geolocation failed: {{geolocationError}}
             {{> googleMap name="map" options=mapOptions}}
         {{/unless}}
-        <p>map div in template map</p>
+<!--        <p>map div in template map</p>-->
     </div>
 
 </template>

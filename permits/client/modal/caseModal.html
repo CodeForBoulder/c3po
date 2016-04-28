@@ -50,29 +50,39 @@
 
               // localhost  109055546115993  c3poDev page id = 914491901967402
               // , {scope: 'publish_actions'}
-//            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()},function(response){
+              
+            function fbResult (response) {
+                if (!response || response.error) {
+                    console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
+                } else {
+                    console.log('post id = ' + JSON.stringify(response));
+                }
+            }
+              
+//            FB.api('/914491901967402/feed', 'get', {scope: 'publish_actions'},fbResult(response));
+            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()},
                 // meteor.com
 //            FB.api('/e: 'publish_actions'}
-            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()},{scope: 'publish_actions'});
-//              function(response){
-//                if (!response || response.error) {
-//                    console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
-//                } else {
-//                    console.log('post id = ' + response);
-//                }
-//            });
+//            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID(), scope: 'publish_actions'},
+                function(response){
+                    if (!response || response.error) {
+                        console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
+                    } else {
+                        console.log('post id = ' + JSON.stringify(response));
+                    }
+                });
 
             console.log('done' + FB.getUserID());
 
           } else if (response.status === 'not_authorized') {
 
-
             console.log('not connected');
             // the user is logged in to Facebook, 
             // but has not authenticated your app
           } else {
-
-            console.log('problem');
+              alert("You must login with Facebook to make this post");
+              // todo: offer an anonymous post capability
+              console.log('problem');
             // the user isn't logged in to Facebook.
           }
          });

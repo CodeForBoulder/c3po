@@ -10,7 +10,18 @@ Template.loginButtons.events({
 
 Template.myProjectsModal.helpers({
    projects: function() {
+       var Cases = new Mongo.Collection("cases");
        var currentUser = Meteor.user();
-       return Cases.find({'_id': {$in: currentUser.profile.subscriptions}});
+       var subCases = [];
+       Meteor.subscribe("all-cases", {
+            onReady: function() {
+                Cases.find({'_id': {$in: currentUser.profile.subscriptions}}).forEach(function(thisCase){
+                    subCases.push(thisCase);
+                })
+            }
+       });
+       return subCases;
+
+//       return Cases.find({'_id': {$in: currentUser.profile.subscriptions}});
    }
 });

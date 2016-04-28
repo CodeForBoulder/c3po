@@ -20,23 +20,15 @@ if (Meteor.isClient) {
         
         GoogleMaps.load({libraries: 'geometry'});
         console.log("Loaded GoogleMap");
-        
 
-        
 // c3poDev for localhost:3000 operation
 
 //         set up Facebook sdk
 
         $("#feed").click(function () {
-            serverFeed()
+            serverFeed();
             console.log("in #feed.click()");
         });
-        Accounts.ui.config({
-            requestPermissions: {
-                facebook: ['publish_actions']
-            }
-        });
-        
 //    window.fbAsyncInit = function() {
 //        console.log("About to call FB.init");
 
@@ -68,11 +60,12 @@ if (Meteor.isClient) {
 //
 //        curAppId = '109055546115993';
 //        $(".fb-like").attr("data-href",curHref);
+        $("#fbFeed").html("new value");
+
+        console.log("fbFeed = " + feedHtml.toString());
+
         console.log("Leaving Meteor.startup");
     });
-//        $("#fbFeed").html("new value");
-//
-//        //         console.log("fbFeed = " + feedHtml.toString());
 //    };
 //
     function openDisc(test){
@@ -107,14 +100,14 @@ if (Meteor.isClient) {
                     docTitlesObj = EJSON.parse(docTitles),
                     titleUrlBase = "https://www-static.bouldercolorado.gov/docs/PDS/plans/" + curCaseNum + "/";
                 if (Array.isArray(docTitlesObj)) {
-                    // todo: handle case where 1 document is available and no thumbs.db exists.
+                    // Must handle the case where 1 document is available and no thumbs.db exists.
                     //      Because of cross-domain restrictions, we cannoc check for existence of the file, 
                     //      so the best we may be able to do is filter by extension (e.g. 'pdf').
                     for (var title in docTitlesObj) {
                         var link = {};
                         link.title = docTitlesObj[title];
                         link.url = titleUrlBase + encodeURI(docTitlesObj[title]);
-                        if (link.title !== "Thumbs.db" && link.title.endsWith('.pdf')) {
+                        if (link.title.endsWith('.pdf')) {
                             TitleLinkCol.push(link);
                         }
                     }
@@ -212,7 +205,7 @@ if (Meteor.isClient) {
                 var userSubscriptions = currentUser.profile.subscriptions;
                 userSubscriptions.push(caseNum);
                 Meteor.users.update(Meteor.userId(), {$set: {'profile.subscriptions': userSubscriptions}});
-                subcribeButton.hide();
+                subscribeButton.hide();
             });
 
             $('.btn-show-docs').click(function(e) {
@@ -224,8 +217,10 @@ if (Meteor.isClient) {
             $('.btn-fb-discussion').click(function() {
                 openDisc('geronimo!!');
             });
-        }
-        "use strict";
+        }   // end: launchModal()
+        
+        // start of showDetails() body
+        
         var curCaseInd;
         if ((e === null) || (e === undefined)) {
             // now, don't bother searching the polygons, just pop the modal with the session data
@@ -292,6 +287,10 @@ if (Meteor.isClient) {
         }
     };
 
+    Template.body.onCreated(function bodyOnCreated() {
+      Meteor.subscribe('cases');
+    });
+
     Template.registerHelper('arrayify',function(obj){
         result = [];
         for (var key in obj) result.push({name:key,value:obj[key]});
@@ -300,7 +299,6 @@ if (Meteor.isClient) {
 
     Template.caseModal.helpers({
         humanReadableName: function(name) {
-            "use strict";
             switch(name) {
                 case "CASE_NUMBE":
                   return "Case Number";
@@ -385,17 +383,23 @@ if (Meteor.isClient) {
                 clickable: true
               });
 
-            Meteor.subscribe("all-cases", {
-                onReady: function() {
+//            Meteor.subscribe("all-cases", {
+//                onReady: function() {
                     Cases.find({}).forEach(function(reviewCase){
                         addToMap(reviewCase, map);
                         })
-                }
-            });
+//                }
+//            });
             map.instance.data.addListener('click', function(event) {
                 showDetails(event);
             });
         });
+    });
+
+    Accounts.ui.config({
+        requestPermissions: {
+            facebook: ['publish_actions']
+        }
     });
 
 }; // end: Meteor.isClient()
@@ -415,13 +419,13 @@ if (Meteor.isServer) {
         //    1. Get admin's account info, use page key to post to the feed
         //    2. Get this into the js file!
         //
-        console.log("Entering serverFeed()");
+        console.error("Entering serverFeed()");
         var pageAccessToken = "1459289887712466|4gmChmzJ2gEpYNJR38jK6g0Leuw";
         FB.api('/109055546115993/accounts','get',function(response) {
             if (!response || response.error) {
-                alert('Error on getting app accounts info for app');
+                console.error('Error on getting app accounts info for app');
             } else {
-                alert('Page access for app (accounts object):\n' + response);
+                console.error('Page access for app (accounts object):\n' + response);
             };
         });
         var feedHtml = FB.api('/914491901967402/feed','post',
@@ -430,14 +434,14 @@ if (Meteor.isServer) {
                               },
             function(response) {
                 if (!response || response.error) {
-                    alert('Error occured: ' + response.error);
+                    console.error('Error occured: ' + response.error);
                     feedHtml = "Error occurred: " + response.error.message;
-                    console.log("fbFeed error: " + feedHtml);
+                    console.error("fbFeed error: " + feedHtml);
                 } else {
-                    alert('Post ID: ' + response.id);
+                    console.error('Post ID: ' + response.id);
                 }
             });
-            console.log("fbFeed = " + feedHtml.toString());
+            console.error("fbFeed = " + feedHtml.toString());
     };
     
     Meteor.startup(function () {
@@ -467,7 +471,7 @@ if (Meteor.isServer) {
 
             var assets_folder = meteor_root + '/server/assets/app';
             //var assets_folder = meteor_root + '/server/assets/' + Npm.require('path').basename( application_root );
-            console.log(assets_folder);
+            console.error(assets_folder);
             return assets_folder;
         }   
         
@@ -488,7 +492,7 @@ if (Meteor.isServer) {
         console.error("declared lineReader");
         
         lineReader.on('line', function(line) {
-//            console.log("about to open a Fiber");
+//            console.error("about to open a Fiber");
             Fiber( function() {
                 var caseNum = "";
                 var devCase = {};
@@ -502,7 +506,7 @@ if (Meteor.isServer) {
                     if(Cases.findOne({'_id': caseNum}) == null) {
                         devCase['_id'] = caseNum;
                         devCase['id'] = caseNum;
-//                        console.log(devCase['id']);
+//                        console.error(devCase['id']);
                         Cases.insert(devCase);
                     };
                 }
@@ -515,11 +519,11 @@ if (Meteor.isServer) {
             }).run();
         });
         
-//        console.log("after lineReader.on callback");
+//        console.error("after lineReader.on callback");
         
         lineReader.on('close', function(line) {
             try {
-                console.log("read last line\n" + line);
+                console.error("read last line\n" + line);
             }
             catch(err) {
                 console.error("error reading last line or opened with end of file\n" + err);
@@ -527,6 +531,6 @@ if (Meteor.isServer) {
             // process last line
             console.error(' Read last line: ...');            
         });
-//        console.log("after lineReader on close");
+//        console.error("after lineReader on close");
     });
 };
