@@ -4,6 +4,34 @@
       <div class="modal-content">
 
         <div class="modal-header" id="modalHead"><h3>{{caseNum}}</h3></div>
+          
+          
+          <div id="disqus_thread"></div>
+                <script>
+                    /**
+                     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+                     */
+
+                    var caseNumb = '{{caseNum}}';
+                    var caseTrim = caseNumb.trim();
+                    var disqus_config = function () {
+                        this.page.url = "localhost:3000/" + caseTrim;
+                        this.page.identifier = caseTrim;
+                        this.page.title = caseTrim;
+                    };
+
+                    (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+                        var d = document, s = d.createElement('script');
+
+                        s.src = '//dearoldan.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
+
+                        s.setAttribute('data-timestamp', +new Date());
+                        (d.head || d.body).appendChild(s);
+                    })();
+                </script>
+                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+          
 
         <div class="modal-body" id="modalBody">
         	<table class="table table-striped" id="modalTable">
