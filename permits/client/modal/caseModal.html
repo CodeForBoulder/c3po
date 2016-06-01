@@ -7,31 +7,63 @@
           
           
           <div id="disqus_thread"></div>
-                <script>
-                    /**
-                     *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-                     *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
-                     */
+          <script data-id="verify">
+            // This waits for the case modal to load then attempts to load
+            // disqus script
+            console.log('before load', $('#caseModal'));
+            var disqus_developer = 1; // this would set it to developer mode
+            $('#caseModal').on('shown.bs.modal', function onLoadCallback(e){
+              console.log('after load');
+              var caseNumb = '{{caseNum}}';
+              var caseTrim = caseNumb.trim();
+              console.log(caseTrim);
+              var script = document.createElement('script');
+              script.type = 'text/javascript';
+              console.log('Before script.src');
+              script.async = true;
+              script.innerHTML =
 
-                    var caseNumb = '{{caseNum}}';
-                    var caseTrim = caseNumb.trim();
-                    var disqus_config = function () {
-                        this.page.url = "localhost:3000/" + caseTrim;
-                        this.page.identifier = caseTrim;
-                        this.page.title = caseTrim;
-                    };
+                // "var disqus_developer = 1;" +
+                // "var disqus_config = function () {" +
+                // "this.page.url = 'localhost:3000';" +
+               // "this.page.identifier = caseTrim;" +
+               // "this.page.title = caseTrim;" +
+                // "};"+
+//                "var uniquId = $(this).attr('id'); " +
+                "DISQUS.reset({ " +
+                "  reload: true, " +
+                "  config: function () { " + 
+//                "    this.page.identifier = 'newidentifier'; " +  
+                "    this.page.url = 'http://boulderpermitting.disqus.com/embed.js' " +
+                "  } " +
+                "}); " +
 
-                    (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
-                        var d = document, s = d.createElement('script');
 
-                        s.src = '//dearoldan.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
-
-                        s.setAttribute('data-timestamp', +new Date());
-                        (d.head || d.body).appendChild(s);
-                    })();
-                </script>
-                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-          
+                "console.log ('hello world'); "
+//                "$.ajax({" +
+//                "  url: 'http://dearolddan.disqus.com/embed.js', " +
+//                "  data: { uniqueidentifier: uniquId }, " +
+//                "  success: function (data) { " +
+//                "    $('#scaseModal').html(data); " +
+ //               "  console.log(data) " +
+ //               "}" +
+                
+//            "}); " 
+//             " (function () {" +
+//                 " console.log('EMBEDED');"+
+//                  "var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;"+
+//                  "dsq.src = 'http://dearolddan.disqus.com/embed.js';"+
+//                  "(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);" +
+//              "})();"
+              
+              // Here we append the dynamically created script
+              $('#disqus_thread').append(script);
+              console.log('This should now be appended');
+            });
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+   
+         <script id="dsq-count-scr" src="//EXAMPLE.disqus.com/count.js" async></script>       
 
         <div class="modal-body" id="modalBody">
         	<table class="table table-striped" id="modalTable">

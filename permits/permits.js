@@ -319,7 +319,7 @@ if (Meteor.isClient) {
             }
         },
         caseNum: function() {
-            return Session.get('caseNum');
+            return Session.get('caseNum').trim();
         },
         featureProperties: function () {
             return Session.get('featureProperties');
@@ -386,11 +386,19 @@ if (Meteor.isClient) {
             Meteor.subscribe("all-cases", {
                 onReady: function() {
                     Cases.find({}).forEach(function(reviewCase){
+                        // console.log(reviewCase._id);
                         addToMap(reviewCase, map);
                         })
                 }
             });
+
+// TODO have to add reviewCase._id to eventlistener event.data
+
             map.instance.data.addListener('click', function(event) {
+                console.log("##");
+                var curCaseInd = Session;
+                console.log(curCaseInd);
+                console.log(event.latLng.lat());
                 showDetails(event);
             });
         });
@@ -534,3 +542,5 @@ if (Meteor.isServer) {
 //        console.error("after lineReader on close");
     });
 };
+
+// var curCaseInd = Session.get('caseInd');

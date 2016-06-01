@@ -11,10 +11,37 @@
         var config = {message: "Auto generated post"};
     </script>
 -->
-
+<script type="text/JavaScript">
+var disqus_developer = 1; // this would set it to developer mode
+</script>
     
 </head>
 <body>
+
+<!-- <div id="disqus_thread"></div> -->
+<script>
+/**
+* RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+* LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+*/
+
+// var disqus_config = function () {
+// this.page.url = "boulderc3po.com"; // Replace PAGE_URL with your page's canonical URL variable
+//this.page.identifier = "caffeine"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+// };
+
+(function() { // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+
+s.src = '//boulderpermitting.disqus.com/embed.js';
+
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+
     <div id="fb-root"></div>
 <script>
 
@@ -50,6 +77,8 @@
 //        console.log("fbFeed = " + feedHtml.toString());
     };
     */
+    /*
+    */
     </script>
 
 <!--
@@ -75,6 +104,9 @@
   {{> thumbnail}}
 <!-- is the map load causing the no route problem? no! -->
 {{> map}} 
+
+<script id="dsq-count-scr" src="//channel-boulderpermitting.disqus.com/count.js" async></script>
+
 </body>
 
 <template name="thumbnail">
