@@ -276,13 +276,22 @@ if (Meteor.isClient) {
             // Show a modal for all selCases, showing the first one found
             if (selCases && selCases.length > 0) {
                 curCaseInd = 0;
-                Session.set({                               
+                console.log(this);
+                Session.set({
+                    // disqus_config: {function(){this.page.url = 'localhost:3000'}},                               
                     caseInd: curCaseInd,
                     caseNum: selCases[curCaseInd].caseId.trim(),
                     featureProperties: Cases.findOne({id: selCases[curCaseInd].caseId}).properties,
                     canSubscribeToProject: selCases[curCaseInd].canSubscribe
-                })
+                });
+                // Game.msg = function(msg){
+                //     var m = Session.get("messages");
+                //     m = _.extend([], m);
+                //     m.push({"text": msg});
+                //     Session.set("messages", m);
+                // };,
                 launchModal();
+                // disqus_config();
             };
         }
     };
@@ -319,13 +328,21 @@ if (Meteor.isClient) {
             }
         },
         caseNum: function() {
-            return Session.get('caseNum').trim();
+            return Session.get('caseNum');
         },
         featureProperties: function () {
             return Session.get('featureProperties');
         },
         canSubscribeToProject: function () {
             return Session.get('canSubscribeToProject');
+        },
+        session: function () {
+            return Session;
+        },
+        disqus_config: function () {
+            this.page.url = 'localhost:3000';
+            this.page.identifier = '{{caseNum}}';
+            this.page.title = '{{caseNum}}';
         }
     });
 

@@ -3,14 +3,76 @@
     <div class="modal-dialog">
       <div class="modal-content">
 
+
+
+         <div>   {{> disqus session}} </div>
+         <script type="text/javascript">
+         console.log("****1*****");
+         console.log(this.page);
+         var test1=this.page;
+
+
+         var greeks = function () {
+            DISQUS.reset({
+                reload: true,
+                config: function () {  
+                  this.page.identifier = {{caseNum}};  
+                  this.page.url = "localhost:3000";
+                }
+            })
+          };
+
+          
+          console.log("******2******");
+          console.log(this);
+          var test2=this.page;
+          console.log(test1===test2);
+         </script>
+
+        <script type="text/javascript">
+        console.log("-"+this+"-");
+        // var disqus_config = function () {
+        //     this.page.url = 'localhost:3000';
+        //     this.page.identifier = '{{caseNum}}';
+        //     this.page.title = '{{caseNum}}';
+        // };
+        // console.log(disqus_config+'..............');
+        </script>
+
+<!--         <div class="comment-section">
+            {{> commentsBox id=documentId}}
+        </div>
+ -->
         <div class="modal-header" id="modalHead"><h3>{{caseNum}}</h3></div>
+
+        <script type="text/javascript">
+        console.log('{{caseNum}} #####');
+        var breakName = '{{caseNum}}';
+        var fixName = breakName.trim();
+        console.log(fixName);
+// Session['TREASURE']=fixName;
+
+        //   var disqus_config = function () {
+        //       // this.page.url = "boulderpermitting.disqus.com/embed.js"; // Replace PAGE_URL with your page's canonical URL variable
+        //       this.page.identifier = "caseNum"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        //     };
+        //   (function() { // DON'T EDIT BELOW THIS LINE
+        //       var d = document, s = d.createElement('script');
+
+        //       s.src = '//boulderpermitting.disqus.com/embed.js';
+
+        //       s.setAttribute('data-timestamp', +new Date());
+        //       (d.head || d.body).appendChild(s);
+        //   })();
+        </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
           
           
           <div id="disqus_thread"></div>
           <script data-id="verify">
             // This waits for the case modal to load then attempts to load
             // disqus script
-            console.log('before load', $('#caseModal'));
+/*            console.log('before load', $('#caseModal'));
             var disqus_developer = 1; // this would set it to developer mode
             $('#caseModal').on('shown.bs.modal', function onLoadCallback(e){
               console.log('after load');
@@ -19,27 +81,45 @@
               console.log(caseTrim);
               var script = document.createElement('script');
               script.type = 'text/javascript';
-              console.log('Before script.src');
+              console.log(caseTrim + ' Before script.src');
               script.async = true;
-              script.innerHTML =
+              // script.innerHTML =
 
-                // "var disqus_developer = 1;" +
-                // "var disqus_config = function () {" +
+              "var disqus_developer = 1; " +
+              "var rawName =  Session['TREASURE']; " +
+              "var trimName = $(rawName.trim()); " +  // "var disqus_config = function () {" +
                 // "this.page.url = 'localhost:3000';" +
                // "this.page.identifier = caseTrim;" +
                // "this.page.title = caseTrim;" +
                 // "};"+
 //                "var uniquId = $(this).attr('id'); " +
-                "DISQUS.reset({ " +
-                "  reload: true, " +
-                "  config: function () { " + 
-//                "    this.page.identifier = 'newidentifier'; " +  
-                "    this.page.url = 'http://boulderpermitting.disqus.com/embed.js' " +
-                "  } " +
-                "}); " +
+              "console.log('pre ' + trimName);  " +
+              "var disqus_config = function () { " +
+              "      var rawName = " +
+              Session['TREASURE'] +
+              " ; " +
+              "      this.page.identifier = '{{caseNum}}' ;" +
+              "      this.page.title = '{{caseNum}}' ;" + 
+              "}; " +
+              "(function() { " +
+              "var d = document, s = d.createElement('script'); " +
+
+              "    s.src = '//boulderpermitting.disqus.com/embed.js'; " +
+
+              "    s.setAttribute('data-timestamp', +new Date()); " +
+              "    (d.head || d.body).appendChild(s); " +
+              "})(); " +
+                // "DISQUS.reset({ " +
+                // "  reload: true, " +
+                // "  config: function () { " +   
+                // "    this.page.url = 'http://boulderpermitting.disqus.com/embed.js'; " +
+                // "    this.page.title = '{{caseNum}}'; " +
+                // "    this.page.identifier = '{{caseNum}}'; " +
+                // "  } " +
+                // "}); " +
 
 
-                "console.log ('hello world'); "
+                "console.log (trimName); "
 //                "$.ajax({" +
 //                "  url: 'http://dearolddan.disqus.com/embed.js', " +
 //                "  data: { uniqueidentifier: uniquId }, " +
@@ -50,7 +130,7 @@
                 
 //            "}); " 
 //             " (function () {" +
-//                 " console.log('EMBEDED');"+
+//                 " =console.log('EMBEDED');"+
 //                  "var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;"+
 //                  "dsq.src = 'http://dearolddan.disqus.com/embed.js';"+
 //                  "(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);" +
@@ -60,6 +140,7 @@
               $('#disqus_thread').append(script);
               console.log('This should now be appended');
             });
+*/
           </script>
           <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
    

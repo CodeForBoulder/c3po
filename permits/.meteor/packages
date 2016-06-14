@@ -5,6 +5,7 @@
 # but you can also edit it by hand.
 
 meteor-platform
+visudare:disqus
 autopublish
 insecure
 templates:tabs
@@ -18,4 +19,5 @@ biasport:facebook-sdk
 mrt:bootstrap-3
 twbs:bootstrap
 peppelg:bootstrap-3-modal
-obvio171:disqus
+arkham:comments-ui
+
