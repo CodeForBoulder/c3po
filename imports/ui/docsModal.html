@@ -1,0 +1,21 @@
+<template name="docsModalTemplate">
+    <div class="modal" id="docsModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" id="docsHead">
+                    <h3>Documents for {{caseNum}}</h3>
+                </div>
+                <div class="modal-body" id="docsBody">
+                    <ul>
+                        {{#each docLinks}}
+                            <li><a href="{{this.url}}" target="_blank">{{this.title}}</a></li>
+                        {{/each}}
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

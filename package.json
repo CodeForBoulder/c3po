@@ -1,0 +1,17 @@
+{
+  "name": "buildingboulder",
+  "private": true,
+  "scripts": {
+    "start": "meteor run"
+  },
+  "dependencies": {
+    "JSONStream": "^1.1.4",
+    "meteor-node-stubs": "^0.2.3"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
