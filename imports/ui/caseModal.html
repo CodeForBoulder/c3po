@@ -18,9 +18,9 @@
                     var caseNumb = '{{caseNum}}';
                     var caseTrim = caseNumb.trim();
                     var disqus_config = function () {
-                        // this.page.url = "https://disqus.com/api/3.0" + caseTrim;
-                        // this.page.identifier = caseTrim;
-                        // this.page.title = caseTrim;
+                        this.page.url = "https://disqus.com/api/3.0" + caseTrim;
+                        this.page.identifier = caseTrim;
+                        this.page.title = caseTrim;
                     };
 
                     {{> disqus title="my page title"}}
