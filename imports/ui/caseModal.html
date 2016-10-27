@@ -3,8 +3,6 @@
     <div class="modal-dialog">
       <div class="modal-content">
 
-
-
         <div class="modal-header" id="modalHead"><h3>{{caseNum}}</h3></div>
           
           
@@ -22,9 +20,8 @@
                         this.page.identifier = caseTrim;
                         this.page.title = caseTrim;
                     };
-
                     // second instatiation
-                    
+
                     {{> disqus title="my page title"}}
 
                     (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
@@ -54,13 +51,12 @@
                   data-casenumber={{caseNum}}
                   >Docs</button>
           <button type='button' class='btn btn-primary modal-btn btn-fb-discussion'>Discuss</button>
-          {{#if canSubscribeToProject}}
           <button 
+            id='btn-subscribe-project'
             type='button' 
             data-casenumber='{{caseNum}}' 
-            class='btn btn-primary modal-btn btn-subscribe-project'
+            class='btn btn-primary modal-btn btn-subscribe-project {{#if cannotSubscribeToProject}}disabled{{/if}}'
           >Subscribe</button>
-          {{/if}}
 
             <button id="clicker2" class="btn btn-primary" onclick="repeater()">Introduce yourself on facebook:</button>
 
@@ -132,11 +128,11 @@
     </script>
         </div>
         <div class="modal-footer">
-            <button type="button" id="btn-prev" class="btn disabled"
+            <button type="button" id="btn-prev" class="btn {{#if noPrev}}disabled{{/if}}"
                     data-casenumber='{{caseNum}}'
                     data-properties='{{featureProperties}}'
                     data-cansubscribe='{{canSubscribeToProject}}'>Prev</button>
-            <button type="button" id="btn-next" class="btn"
+            <button type="button" id="btn-next" class="btn {{#if noNext}}disabled{{/if}}"
                     data-casenumber='{{caseNum}}'
                     data-properties='{{featureProperties}}'
                     data-cansubscribe='{{canSubscribeToProject}}'>Next</button>

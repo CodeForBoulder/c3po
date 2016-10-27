@@ -95,6 +95,7 @@ if (Meteor.isClient) {
         function addToMap(jsonCase, map) {
             console.log("entered addToMap");
             var curFeature = map.instance.data.addGeoJson(jsonCase);
+            // todo: set canSubscribe based on user in subscriptions or not
             curFeature[0].setProperty('canSubscribe', true);  
         }
     });

@@ -22,6 +22,7 @@ export function showDocs(curCaseNum) {
         xmlhttp,
         docURL = "https://www-webapps.bouldercolorado.gov/pds/publicnotice/docspics.php?caseNumber=";
 
+    // todo: switch to a more compact method for getting docs
     if (window.XMLHttpRequest) {
         xmlhttp = new XMLHttpRequest();
     } else {

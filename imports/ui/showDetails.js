@@ -40,9 +40,16 @@ Template.caseModal.helpers({
         featureProperties: function () {
             return Session.get('featureProperties');
         },
-        canSubscribeToProject: function () {
-            return Session.get('canSubscribeToProject');
+        cannotSubscribeToProject: function () {
+            return !Session.get('canSubscribeToProject');
+        },
+        noNext: function () {
+            return !(Session.get('numCases') > Session.get('caseInd')+1);
+        },
+        noPrev: function () {
+            return (Session.get('caseInd') < 1);
         }
+    
 });
 
 export function showDetails(e) {
@@ -67,11 +74,14 @@ export function showDetails(e) {
                 } else if ($(this).hasClass('disabled')) {
                     $(this).removeClass('disabled');
                 }
+                var subs = Cases.findOne({'_id': selCases[curCaseInd].caseId}).properties.subscriptions;
+                var canSub = !subs.includes(Meteor.userId()) && 
+                                             !!Meteor.userId()
                 Session.set({
                     caseInd: curCaseInd,
                     caseNum: selCases[curCaseInd].caseId.trim(),
                     featureProperties: Cases.findOne({id: selCases[curCaseInd].caseId}).properties,
-                    canSubscribeToProject: selCases[curCaseInd].canSubscribe
+                    canSubscribeToProject: canSub
                 })
             }
         });
@@ -88,28 +98,38 @@ export function showDetails(e) {
                 if (selCases.length > 1 && curCaseInd === 1) {
                     $('#btn-prev').removeClass('disabled');
                 }
+                var subs = Cases.findOne({'_id': selCases[curCaseInd].caseId}).properties.subscriptions;
+                var canSub = !subs.includes(Meteor.userId()) && 
+                                             !!Meteor.userId()
                 Session.set({
                     caseInd: curCaseInd,
                     caseNum: selCases[curCaseInd].caseId.trim(),
                     featureProperties: Cases.findOne({id: selCases[curCaseInd].caseId}).properties,
-                    canSubscribeToProject: selCases[curCaseInd].canSubscribe
+                    canSubscribeToProject: canSub
                 })
             }            
         });
 
-        $('.btn-subscribe-project').click(function(e){
+        $('#btn-subscribe-project').click(function(e){
             var subscribeButton = $(e.target);
             var caseNum = Session.get('caseNum');
             var permit = Cases.findOne({id: caseNum});
             var currentUser = Meteor.user();
-            if (typeof currentUser.profile === 'undefined') {
-                alert('Cannot subscribe (failed to find user profile)');
+            // todo: switch from profile to another data store, perhaps
+            // todo: ... each permit has a list of usernames
+            if (typeof currentUser === 'undefined') {
+                alert('Cannot subscribe (user is not logged in)');
             } else {
-                var userSubscriptions = currentUser.profile.subscriptions;
-                userSubscriptions.push(caseNum);
-                Meteor.users.update(Meteor.userId(), {$set:                   {'profile.subscriptions': userSubscriptions}});
+//                var userSubscriptions = permit.properties.subscriptions;
+//                userSubscriptions.push(Meteor.userId());
+                Cases.update({_id: permit._id}, {$push: {'properties.subscriptions': Meteor.userId()}});
+                var curCaseInd = Session.get('caseInd');
+                Session.set({
+                    canSubscribeToProject: false
+                })
+
             }
-            subscribeButton.hide();
+            subscribeButton.disable();
         });
 
         $('.btn-show-docs').click(function(e) {
@@ -160,19 +180,26 @@ export function showDetails(e) {
                         select;
                 }
             }
+            // todo: set canSubscribe based on whether userId is already in item's subscriptions list
+            // todo: set canSubscribe based on Cases collection, not googleMaps item
             if (select) {
+                var subs = Cases.findOne({'_id': item.getId()}).properties.subscriptions;
+                var canSub = !subs.includes(Meteor.userId()) && 
+                                             !!Meteor.userId()
                 selCases.push({caseId: item.getId(),
-                               canSubscribe: item.getProperty('canSubscribe')});
+                               canSubscribe: canSub});
+                item.setProperty('canSubscribeToProject', canSub)
+
             }
             var currentUser = Meteor.user();
             if(currentUser == null) {
-                item.setProperty('canSubscribe', false);
+                item.setProperty('canSubscribeToProject', false);
             } else {
-                if(currentUser !== null && currentUser.profile &&  currentUser.profile.subscriptions === undefined) {
-                    Meteor.users.update(Meteor.userId(), {$set: {'profile.subscriptions': new Array()}});
-                }
-                if(currentUser !== null && currentUser.profile) {
-                    item.setProperty('canSubscribe', jQuery.inArray(item.getId(), currentUser.profile.subscriptions) < 0);
+                // todo: make a new entry for the permit if none exist
+                if (currentUser !== null && 
+                    typeof item.getProperty('subscriptions') === "undefined") {
+                    item.setProperty('subscriptions', new Array());
+                    Cases.update({_id: item.getId()}, {$set: {'properties.subscriptions': new Array()}});
                 }
             };
         }); // end map.instance.data.forEach() iteration
@@ -180,11 +207,18 @@ export function showDetails(e) {
         // Show a modal for all selCases, showing the first one found
         if (selCases && selCases.length > 0) {
             curCaseInd = 0;
-            Session.set({                               
+            if (selCases.length == 1) {
+                $('#btn-next').addClass('disabled');
+            }
+            var curProps = Cases.findOne({id: selCases[curCaseInd].caseId}).properties
+//            selCases[curCaseInd].canSubscribe = !(curProps.subscriptions.length > 0)
+            Session.set({
+                numCases: selCases.length,
                 caseInd: curCaseInd,
                 caseNum: selCases[curCaseInd].caseId.trim(),
-                featureProperties: Cases.findOne({id: selCases[curCaseInd].caseId}).properties,
-                canSubscribeToProject: selCases[curCaseInd].canSubscribe
+                featureProperties: curProps,
+                canSubscribeToProject: !curProps.subscriptions.includes(Meteor.userId()) &&
+                                            !!Meteor.userId()
             })
             launchModal();
         };
