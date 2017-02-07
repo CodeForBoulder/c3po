@@ -1,0 +1,341 @@
+<template name="caseModal" id="caseModalTemplate">
+  <script type="text/javascript">
+  // greeks();
+  //
+  // (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+  //                    var d = document, s = d.createElement('script');
+  //                    s.src = '//greatwhiterabbit.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
+  //                    s.setAttribute('data-timestamp', + new Date());
+  //                    (d.head || d.body).appendChild(s);
+  //                })();
+
+
+
+  console.log("-----1-----");
+  console.log("-"+this+"-");
+  // var disqus_config = function () {
+  //     this.page.url = 'localhost:3000';
+  //     this.page.identifier = '{{caseNum}}';
+  //     this.page.title = '{{caseNum}}';
+  // };
+  // console.log(disqus_config+'..............');
+  </script>
+
+
+
+  <div class="modal" id="caseModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+
+
+
+         <div>   {{> disqus session}} </div>
+         <!-- <div id="disqus_thread"></div> -->
+
+           <div class="comment-section">
+                <!-- {{> commentsBox id=documentId}} -->
+            </div>
+
+    <script type="text/javascript">
+    console.log("****1*****");
+    console.log(this.parent.result);
+    var test1=this;
+                    // /**
+                    //  *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                    //  *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+                    //  */
+                    var caseNumb = '{{caseNum}}';
+                    var caseTrim = caseNumb.trim();
+                    var disqus_config = function () {
+                        this.page.url = "https://disqus.com/api/3.0/" + caseTrim;
+                        this.page.identifier = caseTrim;
+                        this.page.title = caseTrim;
+                    };
+                    // // second instatiation
+                    {{> disqus title="my page title"}}
+                    (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+                        var d = document, s = d.createElement('script');
+                        s.src = '//dearoldan.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
+
+                        // s.src = '//dearolddan.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
+
+                        s.setAttribute('data-timestamp', +new Date());
+                        // s.setAttribute('data-timestamp', + new Date());
+                        (d.head || d.body).appendChild(s);
+                    })();
+
+  //  (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+  //                     var d = document, s = d.createElement('script');
+  //                     s.src = '//getboulderbuildworking.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
+  //                     s.setAttribute('data-timestamp', + new Date());
+  //                     (d.head || d.body).appendChild(s);
+  //                 })();
+
+  //   //
+  //   // var greeks = function () {
+  //   //    DISQUS.reset({
+  //   //        reload: true})
+  //   // }();
+   //
+  //    console.log('greeks');
+  //    {{> disqus title="my page title"}}
+   //
+  //    (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+  //                       var d = document, s = d.createElement('script');
+  //                       s.src = '//getboulderbuildworking.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
+  //                       s.setAttribute('data-timestamp', +new Date());
+  //                       (d.head || d.body).appendChild(s);
+  //                   })();
+   //
+  //   //  (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
+  //    //
+  //   //      DISQUS.reset({
+  //    //
+  //   //        var d = document, s = d.createElement('script');
+  //    //
+  //    //
+  //   //        s.src = '//getboulderbuildworking.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
+  //    //
+  //   //        s.setAttribute('data-timestamp', +new Date());
+  //   //        (d.head || d.body).appendChild(s);
+  //   //      }
+  //   //     );
+  //    //
+  //   //  })();
+   //
+  //    console.log("******2******");
+  //    console.log(this);
+  //    var test2=this.page;
+  //    console.log(test1===test2);
+    </script>
+
+        <div class="modal-header" id="modalHead"><h3>{{caseNum}}</h3></div>
+
+        <script type="text/javascript">
+
+        console.log('greeks2');
+        console.log(this);
+        console.log('{{caseNum}} #####');
+        var breakName = '{{caseNum}}';
+        var fixName = breakName.trim();
+        console.log(fixName);
+// Session['TREASURE']=fixName;
+
+        //   var disqus_config = function () {
+        //       this.page.url = "boulderpermitting.disqus.com/embed.js"; // Replace PAGE_URL with your page's canonical URL variable
+        //       this.page.identifier = "caseNum"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        //     };
+        //   (function() { // DON'T EDIT BELOW THIS LINE
+        //       var d = document, s = d.createElement('script');
+
+        //       s.src = '//boulderpermitting.disqus.com/embed.js';
+
+        //       s.setAttribute('data-timestamp', +new Date());
+        //       (d.head || d.body).appendChild(s);
+        //   })();
+        </script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+          <!-- <div>   {{> disqus session}} </div> -->
+          <!-- <div id="disqus_thread"></div> -->
+          <script data-id="verify">
+
+          console.log('boo-hoo!!!!!');
+
+          greeks();
+
+          //  DISQUS.reset({
+          //      reload: true,
+          //      config: function () {
+          //        this.page.identifier = {{caseNum}};
+          //        this.page.url = "localhost:3000/#!";
+          //      }
+
+
+            //  greeks();
+
+            // This waits for the case modal to load then attempts to load
+            // disqus script
+/*            console.log('before load', $('#caseModal'));
+            var disqus_developer = 1; // this would set it to developer mode
+            $('#caseModal').on('shown.bs.modal', function onLoadCallback(e){
+              console.log('after load');
+              var caseNumb = '{{caseNum}}';
+              var caseTrim = caseNumb.trim();
+              console.log(caseTrim);
+              var script = document.createElement('script');
+              script.type = 'text/javascript';
+              console.log(caseTrim + ' Before script.src');
+              script.async = true;
+              // script.innerHTML =
+
+              "var disqus_developer = 1; " +
+              "var rawName =  Session['TREASURE']; " +
+              "var trimName = $(rawName.trim()); " +  // "var disqus_config = function () {" +
+                // "this.page.url = 'localhost:3000';" +
+               // "this.page.identifier = caseTrim;" +
+               // "this.page.title = caseTrim;" +
+                // "};"+
+//                "var uniquId = $(this).attr('id'); " +
+              "console.log('pre ' + trimName);  " +
+              "var disqus_config = function () { " +
+              "      var rawName = " +
+              Session['TREASURE'] +
+              " ; " +
+              "      this.page.identifier = '{{caseNum}}' ;" +
+              "      this.page.title = '{{caseNum}}' ;" +
+              "}; " +
+              "(function() { " +
+              "var d = document, s = d.createElement('script'); " +
+
+              "    s.src = '//boulderpermitting.disqus.com/embed.js'; " +
+
+              "    s.setAttribute('data-timestamp', +new Date()); " +
+              "    (d.head || d.body).appendChild(s); " +
+              "})(); " +
+                // "DISQUS.reset({ " +
+                // "  reload: true, " +
+                // "  config: function () { " +
+                // "    this.page.url = 'http://boulderpermitting.disqus.com/embed.js'; " +
+                // "    this.page.title = '{{caseNum}}'; " +
+                // "    this.page.identifier = '{{caseNum}}'; " +
+                // "  } " +
+                // "}); " +
+
+
+                "console.log (trimName); "
+//                "$.ajax({" +
+//                "  url: 'http://dearolddan.disqus.com/embed.js', " +
+//                "  data: { uniqueidentifier: uniquId }, " +
+//                "  success: function (data) { " +
+//                "    $('#scaseModal').html(data); " +
+ //               "  console.log(data) " +
+ //               "}" +
+
+//            "}); "
+//             " (function () {" +
+//                 " =console.log('EMBEDED');"+
+//                  "var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;"+
+//                  "dsq.src = 'http://dearolddan.disqus.com/embed.js';"+
+//                  "(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);" +
+//              "})();"
+
+              // Here we append the dynamically created script
+              $('#disqus_thread').append(script);
+              console.log('This should now be appended');
+            });
+*/
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+
+         <script id="dsq-count-scr" src="//EXAMPLE.disqus.com/count.js" async></script>
+
+        <div class="modal-body" id="modalBody">
+        	<table class="table table-striped" id="modalTable">
+        		<tbody id="modalTableData">
+              {{#each arrayify featureProperties}}
+              <tr>
+                <td class='case-property'>{{humanReadableName name}}:</td><td>{{value}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+        	</table>
+          <button type='button'
+                  class='btn btn-primary modal-btn btn-show-docs'
+                  data-casenumber={{caseNum}}
+                  >Docs</button>
+          <button type='button' class='btn btn-primary modal-btn btn-fb-discussion'>Discuss</button>
+          {{#if canSubscribeToProject}}
+          <button
+            type='button'
+            data-casenumber='{{caseNum}}'
+            class='btn btn-primary modal-btn btn-subscribe-project'
+          >Subscribe</button>
+          {{/if}}
+
+            <button id="clicker2" class="btn btn-primary" onclick="repeater()">Introduce yourself on facebook:</button>
+
+    <!-- <script type="text/javascript">
+    function repeater(){
+
+        FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') {
+            // the user is logged in and has authenticated your
+            // app, and response.authResponse supplies
+            // the user's ID, a valid access token, a signed
+            // request, and the time the access token
+            // and signed request each expire
+
+
+
+            // var uid = response.authResponse.userID;
+            // var accessToken = response.authResponse.accessToken;
+            // console.log('uid= ', uid);
+            // console.log('accessToken= ', accessToken);
+
+              // localhost  109055546115993  c3poDev page id = 914491901967402
+              // , {scope: 'publish_actions'}
+
+            function fbResult (response) {
+                if (!response || response.error) {
+                    console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
+                } else {
+                    console.log('post id = ' + JSON.stringify(response));
+                }
+            }
+
+//            FB.api('/914491901967402/feed', 'get', {scope: 'publish_actions'},fbResult(response));
+            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()},
+                // meteor.com
+//            FB.api('/e: 'publish_actions'}
+//            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID(), scope: 'publish_actions'},
+                function(response){
+                    if (!response || response.error) {
+                        console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
+                    } else {
+                        console.log('post id = ' + JSON.stringify(response));
+                    }
+                });
+
+            console.log('done' + FB.getUserID());
+
+          } else if (response.status === 'not_authorized') {
+
+            console.log('not connected');
+            // the user is logged in to Facebook,
+            // but has not authenticated your app
+          } else {
+              alert("You must login with Facebook to make this post");
+              // todo: offer an anonymous post capability
+              console.log('problem');
+            // the user isn't logged in to Facebook.
+          }
+         });
+
+      // ALTERNATELY THE FOLLOWING CODE INCLUDES LOG-IN OPTIONS
+
+      //   FB.login(function(test){
+      // // Note: The call will only work if you accept the permission request
+      //       FB.api('/boulderc3po/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()});
+      //   }, {scope: 'publish_actions'});
+
+    };
+    </script> -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="btn-prev" class="btn disabled"
+                    data-casenumber='{{caseNum}}'
+                    data-properties='{{featureProperties}}'
+                    data-cansubscribe='{{canSubscribeToProject}}'>Prev</button>
+            <button type="button" id="btn-next" class="btn"
+                    data-casenumber='{{caseNum}}'
+                    data-properties='{{featureProperties}}'
+                    data-cansubscribe='{{canSubscribeToProject}}'>Next</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</template>

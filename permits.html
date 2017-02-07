@@ -1,0 +1,148 @@
+<head>
+    <title>permits</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <style type="text/css">
+            html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!--    <script>
+        var config = {message: "Auto generated post"};
+    </script>
+-->
+<script type="text/JavaScript">
+var disqus_developer = 1; // this would set it to developer mode
+</script>
+
+</head>
+<body>
+
+<!-- <div id="disqus_thread"></div> -->
+<script>
+/**
+* RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+* LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+*/
+
+// var disqus_config = function () {
+// this.page.url = "boulderc3po.com"; // Replace PAGE_URL with your page's canonical URL variable
+//this.page.identifier = "caffeine"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+// };
+
+// (function() { // DON'T EDIT BELOW THIS LINE
+// var d = document, s = d.createElement('script');
+
+// s.src = '//boulderpermitting.disqus.com/embed.js';
+
+// s.setAttribute('data-timestamp', +new Date());
+// (d.head || d.body).appendChild(s);
+// })();
+// </script>
+<!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> -->
+
+
+    <div id="fb-root"></div>
+<script>
+
+(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+// 212034485818098
+    // cfbc3po.meteor.com
+//    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=212034485818098";
+    // localhost:3000
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=109055546115993";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+    <script>
+/*    function showFeed() {
+        // Todo:
+        //    1. Get admin's account info, use page key to post to the feed
+        //    2. Get this into the js file!
+        //
+            var feedHtml = FB.api('/914491901967402/feed','post',
+                                  {message: 'Autoposted from app'},
+                                  function(response) {
+                if (!response || response.error) {
+                    alert('Error occured: ' + response.error);
+                    feedHtml = "Error occurred: " + response.error.message;
+                    console.log("fbFeed error: " + feedHtml);
+                } else {
+                    alert('Post ID: ' + response.id);
+                }
+                });
+        $("#fbFeed").html("new value");
+//        console.log("fbFeed = " + feedHtml.toString());
+    };
+    </script>
+
+<!--
+    <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    var patt = new RegExp("localhost");
+    curAppId = (patt.test(location.href)) ? '109055546115993':'1459289887712466';
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4&appId="+curAppId;
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+-->
+
+    <header>
+        <img src="/img/boulderLogo.png" alt="City of Boulder">
+        {{> loginButtons align="right"}}
+        <h1>Boulder Permit Access</h1>
+        {{> fbbtn}}
+        &nbsp;
+    </header>
+
+  {{> thumbnail}}
+<!-- is the map load causing the no route problem? no! -->
+{{> map}}
+
+<!-- <script id="dsq-count-scr" src="//channel-dearoldan.disqus.com/count.js" async></script> -->
+
+</body>
+
+<template name="thumbnail">
+    <div>
+        <div id="nav">
+            <input type="submit" name="close" value="x" id="close" alt="close" /><br>
+        </div>
+        <div id="selDetails">
+        </div>
+        <div id="discuss">
+            <!-- localhost:3000 -->
+            <div class="fb-comments" data-href="https://www.facebook.com/c3podev/" data-width="300" data-numposts="2">
+            <!-- cfbc3po.meteor.com -->
+<!--            <div class="fb-comments" data-href="https://www.facebook.com/c3poboulder/" data-width="300" data-numposts="2">-->
+            </div>
+        </div>
+    </div>
+</template>
+
+<template name="map">
+    <div class="map-container" id="map-canvas">
+
+        {{#unless geolocationError}}
+            {{> googleMap name="map" options=mapOptions}}
+        {{else}}
+            Geolocation failed: {{geolocationError}}
+            {{> googleMap name="map" options=mapOptions}}
+        {{/unless}}
+<!--        <p>map div in template map</p>-->
+    </div>
+
+</template>
+
+<template name="fbbtn">
+    <div class="fb-like"
+         data-href="tbd"
+         data-layout="standard"
+         data-action="like"
+         data-show-faces="true"
+         data-share="true">
+    </div>
+</template>
