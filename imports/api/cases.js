@@ -2,15 +2,36 @@ import { Meteor} from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { EJSON } from 'meteor/ejson';
 import { JSONStream } from 'JSONStream';
-
+//import { extPoly } from '../ui/gMap.js';
 export const Cases = new Mongo.Collection('cases');
 
 if (Meteor.isServer) {
     // This code only runs on the server
     // Only publish tasks that are public or belong to the current user
 //    console.error("Entered isServer function");
-    Meteor.publish('cases', function casesPublication() {
-        return Cases.find({}); // find everything
+    Meteor.publish('cases', function casesPublication(extPoly) {
+//        return Cases.find({}); // find everything
+        // todo: See if we can return only the visible polygons
+        if (typeof extPoly !== 'undefined' && extPoly !== null) {
+            console.error("Finding polygons within " + extPoly.toString());
+            var result = Cases.find({
+                        geometry: {
+                            $geoWithin: {
+                                $geometry: {
+                                    type: "Polygon",
+                                    coordinates: extPoly
+                                }
+                            }
+                        }
+                    });
+            console.error("Found polygons:\n" + result.map(function(u) {return u._id + "\n\t"}) + "\n");
+        } else {
+            console.error("extPoly is null, return nothing");
+            return this.ready();
+//            result = Cases.find({});
+//            console.error("Looked up all polygons - extPoly is null");
+        }
+        return result;
     });
      
     Meteor.startup(function () {
@@ -71,5 +92,6 @@ if (Meteor.isServer) {
                         Cases.insert(devCase);
                     };
             }
+        Cases._ensureIndex({'loc.coordinates':'2dsphere'});
     });
 }

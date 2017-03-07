@@ -65,18 +65,18 @@ export function showDetails(e) {
         $('#btn-prev').click(function(e) {
             var curCaseInd = Session.get('caseInd');
             if (curCaseInd -1 >= 0) {
-                if (curCaseInd === selCases.length - 1) {
-                    $('#btn-next').removeClass('disabled');
-                }
+//                if (curCaseInd === selCases.length - 1) {
+//                    $('#btn-next').removeClass('disabled');
+//                }
                 curCaseInd--;
-                if (curCaseInd === 0) { // disable only when first item reached
-                    $(this).addClass('disabled');
-                } else if ($(this).hasClass('disabled')) {
-                    $(this).removeClass('disabled');
-                }
+//                if (curCaseInd === 0) { // disable only when first item reached
+//                    $(this).addClass('disabled');
+//                } else if ($(this).hasClass('disabled')) {
+//                    $(this).removeClass('disabled');
+//                }
                 var subs = Cases.findOne({'_id': selCases[curCaseInd].caseId}).properties.subscriptions;
-                var canSub = !subs.includes(Meteor.userId()) && 
-                                             !!Meteor.userId()
+                var canSub = !!Meteor.user() && 
+                    (typeof subs == "undefined" || !subs.includes(Meteor.userId()));
                 Session.set({
                     caseInd: curCaseInd,
                     caseNum: selCases[curCaseInd].caseId.trim(),
@@ -90,17 +90,17 @@ export function showDetails(e) {
             var curCaseInd = Session.get('caseInd');
             if (curCaseInd +1 < selCases.length) {
                 curCaseInd++;
-                if (curCaseInd >= selCases.length - 1) {   // disable only when last item reached
-                    $(this).addClass('disabled');
-                } else if ($(this).hasClass('disabled')) {
-                    $(this).removeClass('disabled');
-                }
-                if (selCases.length > 1 && curCaseInd === 1) {
-                    $('#btn-prev').removeClass('disabled');
-                }
+//                if (curCaseInd >= selCases.length - 1) {   // disable only when last item reached
+//                    $(this).addClass('disabled');
+//                } else if ($(this).hasClass('disabled')) {
+//                    $(this).removeClass('disabled');
+//                }
+//                if (selCases.length > 1 && curCaseInd === 1) {
+//                    $('#btn-prev').removeClass('disabled');
+//                }
                 var subs = Cases.findOne({'_id': selCases[curCaseInd].caseId}).properties.subscriptions;
-                var canSub = !subs.includes(Meteor.userId()) && 
-                                             !!Meteor.userId()
+                var canSub = !!Meteor.user() && 
+                    (typeof subs == "undefined" || !subs.includes(Meteor.userId()));
                 Session.set({
                     caseInd: curCaseInd,
                     caseNum: selCases[curCaseInd].caseId.trim(),
@@ -132,7 +132,7 @@ export function showDetails(e) {
             subscribeButton.disable();
         });
 
-        $('.btn-show-docs').click(function(e) {
+        $('.btn-show-docs').one('click',function(e) {
             var showDocsButton = $(e.target);
             var caseNum = Session.get('caseNum');
             showDocs(caseNum);
@@ -184,8 +184,8 @@ export function showDetails(e) {
             // todo: set canSubscribe based on Cases collection, not googleMaps item
             if (select) {
                 var subs = Cases.findOne({'_id': item.getId()}).properties.subscriptions;
-                var canSub = !subs.includes(Meteor.userId()) && 
-                                             !!Meteor.userId()
+                var canSub = !!Meteor.user() && 
+                    (typeof subs == "undefined" || !subs.includes(Meteor.userId()));
                 selCases.push({caseId: item.getId(),
                                canSubscribe: canSub});
                 item.setProperty('canSubscribeToProject', canSub)
@@ -217,8 +217,10 @@ export function showDetails(e) {
                 caseInd: curCaseInd,
                 caseNum: selCases[curCaseInd].caseId.trim(),
                 featureProperties: curProps,
-                canSubscribeToProject: !curProps.subscriptions.includes(Meteor.userId()) &&
-                                            !!Meteor.userId()
+                canSubscribeToProject:  !!Meteor.userId() &&
+                                        !!curProps.subscriptions &&
+                                        !curProps.subscriptions.includes(Meteor.userId())
+                                            
             })
             launchModal();
         };

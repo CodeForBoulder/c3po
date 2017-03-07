@@ -9,6 +9,7 @@ import { Template } from 'meteor/templating';
 
 import { GoogleMaps } from 'meteor/dburles:google-maps';
 import { Geolocation } from 'meteor/mdg:geolocation';
+import { Tracker } from 'meteor/tracker';
 
 import { Cases } from '../api/cases.js';
 
@@ -18,7 +19,11 @@ import './gMap.html';
 
 "use strict";
 
+export var extPoly;
+
 if (Meteor.isClient) {
+
+//extPoly = [[[0,0],[0,0],[0,0],[0,0]]];
 
     Meteor.startup(function () {
         GoogleMaps.load({
@@ -57,7 +62,8 @@ if (Meteor.isClient) {
             } else {
                 console.log("either maps not loaded or latLng missing");
                 return {
-                    center: new google.maps.LatLng(40.0275, -105.251945),
+//                    center: new google.maps.LatLng(40.0275, -105.251945),
+                    center: null,
                     zoom:   MAP_ZOOM                
                 }
             }
@@ -80,13 +86,73 @@ if (Meteor.isClient) {
                 fillOpacity: 0.2,
                 clickable: true
               });
-            Meteor.subscribe("cases", {
-                onReady: function() {
-                    Cases.find({}).forEach(function(reviewCase){
-                        addToMap(reviewCase, map);
-                        })
-                }
-            });
+            // todo: subscribe to and add those polygons that have become visible
+            //    todo: google.maps.addEventListener(map,'idle', function() {});
+            //    todo: the function - find the extents and send the coords as polygon to Mongo $geoWithin
+            //       todo: test this sucker!
+            map.instance.addListener('idle',function() {
+//            google.maps.addEventListener(map,'idle',function() {
+                // find the extents and build a polygon for Mongo
+                var curExtent = GoogleMaps.maps.map.instance.getBounds();
+                // todo: only use getNorthEast and getSouthWest
+                extPoly = [[
+                    [curExtent.getSouthWest().lng(),curExtent.getSouthWest().lat()],
+                    [curExtent.getSouthWest().lng(),curExtent.getNorthEast().lat()],
+                    [curExtent.getNorthEast().lng(),curExtent.getNorthEast().lat()],
+                    [curExtent.getNorthEast().lng(),curExtent.getSouthWest().lat()],
+                    [curExtent.getSouthWest().lng(),curExtent.getSouthWest().lat()]
+                    
+//                    [curExtent.getSouthWest().lng(),curExtent.getSouthWest().lat()],
+//                    [curExtent.getNorthEast().lng(),curExtent.getSouthWest().lat()],
+//                    [curExtent.getNorthEast().lng(),curExtent.getNorthEast().lat()],
+//                    [curExtent.getSouthWest().lng(),curExtent.getNorthEast().lat()],
+//                    [curExtent.getSouthWest().lng(),curExtent.getSouthWest().lat()]
+
+                    // Meaning:
+//                    [curExtent.getSouthWest().lng(),curExtent.getSouthWest().lat()],
+//                    [curExtent.getNorthWest().lng(),curExtent.getNorthWest().lat()],
+//                    [curExtent.getNorthEast().lng(),curExtent.getNorthEast().lat()],
+//                    [curExtent.getSouthEast().lng(),curExtent.getSouthEast().lat()]
+                ]];
+                console.log("Setting extPoly to " + extPoly);
+                
+                const handle = Meteor.subscribe('cases', extPoly);
+                Tracker.autorun(() => {
+                    const isReady = handle.ready();
+                    console.log(`Handle is ${isReady ? 'ready' : 'not ready'}`);  
+                    if (isReady) {
+                        var caseCount = 0;
+                        Cases.find({}).forEach(function(reviewCase) {
+                            caseCount++;
+                            addToMap(reviewCase, GoogleMaps.maps.map);
+                        });
+                        console.log("Mapping " + caseCount + " cases.");
+                    }
+                });
+
+//                Meteor.subscribe("cases",extPoly);
+                // todo: move the find to a helper that uses a server function
+//                Cases.find({
+//                    loc: {
+//                        $geoWithin: {
+//                            $geometry: {
+//                                type: "Polygon",
+//                                coordinates: extPoly
+//                            }
+//                        }
+//                    }
+//                }).forEach(function(reviewCase) {
+//                    addToMap(reviewCase, map);
+//                
+//            });
+                
+//            Meteor.subscribe("cases", {
+//                onReady: function() {
+//                    Cases.find({}).forEach(function(reviewCase){
+//                        addToMap(reviewCase, map);
+//                        })
+//                }
+//            });
             map.instance.data.addListener('click', function(event) {
                 showDetails(event);
             });
@@ -99,4 +165,9 @@ if (Meteor.isClient) {
             curFeature[0].setProperty('canSubscribe', true);  
         }
     });
+});
+}
+
+if (Meteor.isServer) {
+    extPoly = [[[0,0],[0,0],[0,0],[0,0]]];
 }
