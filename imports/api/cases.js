@@ -65,8 +65,6 @@ if (Meteor.isServer) {
             return assets_folder;
         }   
         
-        var Fiber = require( "fibers" );
-        
         // read and process
         
         var assetPath = getAssetPath();
