@@ -4,8 +4,8 @@
       <div class="modal-content">
 
         <div class="modal-header" id="modalHead"><h3>{{caseNum}}</h3></div>
-          
-          
+
+
           <div id="disqus_thread"></div>
                 <script>
                     /**
@@ -27,14 +27,14 @@
                     (function() {  // REQUIRED CONFIGURATION VARIABLE: EDIT THE SHORTNAME BELOW
                         var d = document, s = d.createElement('script');
 
-                        s.src = '//dearoldan.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
+                        s.src = '//greatwhiterabbit.disqus.com/embed.js';  // IMPORTANT: Replace EXAMPLE with your forum shortname!
 
                         s.setAttribute('data-timestamp', +new Date());
                         (d.head || d.body).appendChild(s);
                     })();
                 </script>
                 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-          
+
 
         <div class="modal-body" id="modalBody">
         	<table class="table table-striped" id="modalTable">
@@ -46,15 +46,15 @@
               {{/each}}
             </tbody>
         	</table>
-          <button type='button' 
+          <button type='button'
                   class='btn btn-primary modal-btn btn-show-docs'
                   data-casenumber={{caseNum}}
                   >Docs</button>
           <button type='button' class='btn btn-primary modal-btn btn-fb-discussion'>Discuss</button>
-          <button 
+          <button
             id='btn-subscribe-project'
-            type='button' 
-            data-casenumber='{{caseNum}}' 
+            type='button'
+            data-casenumber='{{caseNum}}'
             class='btn btn-primary modal-btn btn-subscribe-project {{#if cannotSubscribeToProject}}disabled{{/if}}'
           >Subscribe</button>
 
@@ -68,7 +68,7 @@
             // the user is logged in and has authenticated your
             // app, and response.authResponse supplies
             // the user's ID, a valid access token, a signed
-            // request, and the time the access token 
+            // request, and the time the access token
             // and signed request each expire
 
 
@@ -80,7 +80,7 @@
 
               // localhost  109055546115993  c3poDev page id = 914491901967402
               // , {scope: 'publish_actions'}
-              
+
             function fbResult (response) {
                 if (!response || response.error) {
                     console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
@@ -88,7 +88,7 @@
                     console.log('post id = ' + JSON.stringify(response));
                 }
             }
-              
+
 //            FB.api('/914491901967402/feed', 'get', {scope: 'publish_actions'},fbResult(response));
             FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()},
                 // meteor.com
@@ -107,7 +107,7 @@
           } else if (response.status === 'not_authorized') {
 
             console.log('not connected');
-            // the user is logged in to Facebook, 
+            // the user is logged in to Facebook,
             // but has not authenticated your app
           } else {
               alert("You must login with Facebook to make this post");

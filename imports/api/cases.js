@@ -33,7 +33,7 @@ if (Meteor.isServer) {
         }
         return result;
     });
-     
+
     Meteor.startup(function () {
         "use strict";
         // code to run on server at startup
@@ -42,14 +42,14 @@ if (Meteor.isServer) {
         //     These are stored in https://www-static.bouldercolorado.gov/docs/PDS/Plans/<CASE_NUMBE>/ folder
         // 3. Build a Mongo collection of features for each CASE_NUMBE
 
-        
+
         function getAssetPath() {
             var meteor_root = require('fs').realpathSync(process.cwd() + '/../');
-            
+
 //            console.error(meteor_root);
-            
+
 //            var assets_folder = __meteor_bootstrap__.serverDir + '/assets/app';
-            
+
             // /meteor/containers/b98c25e5-4e38-5531-cc67-85a5a29c68dc/bundle/programs/server/boot.js:229:5
 
             var application_root = require('fs').realpathSync(meteor_root + '/../');
@@ -63,23 +63,26 @@ if (Meteor.isServer) {
             //var assets_folder = meteor_root + '/server/assets/' + require('path').basename( application_root );
 //            console.error(assets_folder);
             return assets_folder;
-        }   
-        
-        // read and process
-        
-        var assetPath = getAssetPath();
-        
-        Assets.getBinary('DevelopmentReview.GeoJSON.json');
+        }
 
-        
+        // read and process
+
+        var assetPath = getAssetPath();
+
         var fs = require('fs');
-        
-        var geoJson = {};
-        
+        var jsonFilePath = './assets/app/DevelopmentReview.GeoJSON.json';
+        var geoJsonFile = fs.readFileSync(jsonFilePath, 'utf-8');
+        var geoJson = JSON.parse(geoJsonFile)
+
         // require will read in and parse only if extension is ".json"
-        geoJson = require(assetPath + '/DevelopmentReview.GeoJSON.json');
-        
+
+        //geoJson = Assets.getText('DevelopmentReview.GeoJSON.json');
+
+        // geoJson = Assets.getText('public/DevelopmentReview.GeoJSON.json');
+        // geoJson = require(assetPath + '/DevelopmentReview.GeoJSON.json');
+
             var caseNum = "";
+            console.log("oooooo", geoJson);
             console.error(geoJson.features.length);
             for (var caseInd in geoJson.features) {
                 var devCase = geoJson.features[caseInd];
