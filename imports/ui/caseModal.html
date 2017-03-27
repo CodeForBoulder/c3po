@@ -6,7 +6,116 @@
         <div class="modal-header" id="modalHead"><h3>{{caseNum}}</h3></div>
 
 
-          <div id="disqus_thread"></div>
+
+
+        <div class="modal-body" id="modalBody">
+        	<table class="table table-striped" id="modalTable">
+        		<tbody id="modalTableData">
+              {{#each arrayify featureProperties}}
+              <tr>
+                <td class='case-property'>{{humanReadableName name}}:</td><td>{{value}}</td>
+              </tr>
+              {{/each}}
+            </tbody>
+        	</table>
+          <button type='button'
+                  class='btn btn-primary modal-btn btn-show-docs'
+                  data-casenumber={{caseNum}}
+                  >Docs</button>
+          <button type='button' class='btn btn-primary modal-btn btn-fb-discussion'>Discuss</button>
+<!--
+          <button
+            id='btn-subscribe-project'
+            type='button'
+            data-casenumber='{{caseNum}}'
+            class='btn btn-primary modal-btn btn-subscribe-project {{#if cannotSubscribeToProject}}disabled{{/if}}'
+          >Subscribe</button>
+-->
+
+<!--            <button id="clicker2" class="btn btn-primary" onclick="repeater()">Introduce yourself on facebook:</button>-->
+
+<!--
+    <script type="text/javascript">
+    function repeater(){
+
+        FB.getLoginStatus(function(response) {
+          if (response.status === 'connected') {
+            // the user is logged in and has authenticated your
+            // app, and response.authResponse supplies
+            // the user's ID, a valid access token, a signed
+            // request, and the time the access token
+            // and signed request each expire
+
+
+
+            // var uid = response.authResponse.userID;
+            // var accessToken = response.authResponse.accessToken;
+            // console.log('uid= ', uid);
+            // console.log('accessToken= ', accessToken);
+
+              // localhost  109055546115993  c3poDev page id = 914491901967402
+              // , {scope: 'publish_actions'}
+
+//            function fbResult (response) {
+//                if (!response || response.error) {
+//                    console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
+//                } else {
+//                    console.log('post id = ' + JSON.stringify(response));
+//                }
+//            }
+//
+////            FB.api('/914491901967402/feed', 'get', {scope: 'publish_actions'},fbResult(response));
+//            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()},
+//                // meteor.com
+////            FB.api('/e: 'publish_actions'}
+////            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID(), scope: 'publish_actions'},
+//                function(response){
+//                    if (!response || response.error) {
+//                        console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
+//                    } else {
+//                        console.log('post id = ' + JSON.stringify(response));
+//                    }
+//                });
+//
+//            console.log('done' + FB.getUserID());
+
+          } else if (response.status === 'not_authorized') {
+
+            console.log('not connected');
+            // the user is logged in to Facebook,
+            // but has not authenticated your app
+          } else {
+              alert("You must login with Facebook to make this post");
+              // todo: offer an anonymous post capability
+              console.log('problem');
+            // the user isn't logged in to Facebook.
+          }
+         });
+
+      // ALTERNATELY THE FOLLOWING CODE INCLUDES LOG-IN OPTIONS
+
+      //   FB.login(function(test){
+      // // Note: The call will only work if you accept the permission request
+      //       FB.api('/boulderc3po/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()});
+      //   }, {scope: 'publish_actions'});
+
+    };
+    </script>
+-->
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" id="btn-prev" class="btn {{#if noPrev}}disabled{{/if}}"
+                    data-casenumber='{{caseNum}}'
+                    data-properties='{{featureProperties}}'
+                    data-cansubscribe='{{canSubscribeToProject}}'>Prev</button>
+            <button type="button" id="btn-next" class="btn {{#if noNext}}disabled{{/if}}"
+                    data-casenumber='{{caseNum}}'
+                    data-properties='{{featureProperties}}'
+                    data-cansubscribe='{{canSubscribeToProject}}'>Next</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+            <div id="disqus_thread" hidden="true"></div>
                 <script>
                     /**
                      *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
@@ -34,109 +143,6 @@
                     })();
                 </script>
                 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
-
-
-        <div class="modal-body" id="modalBody">
-        	<table class="table table-striped" id="modalTable">
-        		<tbody id="modalTableData">
-              {{#each arrayify featureProperties}}
-              <tr>
-                <td class='case-property'>{{humanReadableName name}}:</td><td>{{value}}</td>
-              </tr>
-              {{/each}}
-            </tbody>
-        	</table>
-          <button type='button'
-                  class='btn btn-primary modal-btn btn-show-docs'
-                  data-casenumber={{caseNum}}
-                  >Docs</button>
-          <button type='button' class='btn btn-primary modal-btn btn-fb-discussion'>Discuss</button>
-          <button
-            id='btn-subscribe-project'
-            type='button'
-            data-casenumber='{{caseNum}}'
-            class='btn btn-primary modal-btn btn-subscribe-project {{#if cannotSubscribeToProject}}disabled{{/if}}'
-          >Subscribe</button>
-
-            <button id="clicker2" class="btn btn-primary" onclick="repeater()">Introduce yourself on facebook:</button>
-
-    <script type="text/javascript">
-    function repeater(){
-
-        FB.getLoginStatus(function(response) {
-          if (response.status === 'connected') {
-            // the user is logged in and has authenticated your
-            // app, and response.authResponse supplies
-            // the user's ID, a valid access token, a signed
-            // request, and the time the access token
-            // and signed request each expire
-
-
-
-            // var uid = response.authResponse.userID;
-            // var accessToken = response.authResponse.accessToken;
-            // console.log('uid= ', uid);
-            // console.log('accessToken= ', accessToken);
-
-              // localhost  109055546115993  c3poDev page id = 914491901967402
-              // , {scope: 'publish_actions'}
-
-            function fbResult (response) {
-                if (!response || response.error) {
-                    console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
-                } else {
-                    console.log('post id = ' + JSON.stringify(response));
-                }
-            }
-
-//            FB.api('/914491901967402/feed', 'get', {scope: 'publish_actions'},fbResult(response));
-            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()},
-                // meteor.com
-//            FB.api('/e: 'publish_actions'}
-//            FB.api('/914491901967402/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID(), scope: 'publish_actions'},
-                function(response){
-                    if (!response || response.error) {
-                        console.log('error on FB post ' + (JSON.stringify(response.error) || null) + "*****\n")
-                    } else {
-                        console.log('post id = ' + JSON.stringify(response));
-                    }
-                });
-
-            console.log('done' + FB.getUserID());
-
-          } else if (response.status === 'not_authorized') {
-
-            console.log('not connected');
-            // the user is logged in to Facebook,
-            // but has not authenticated your app
-          } else {
-              alert("You must login with Facebook to make this post");
-              // todo: offer an anonymous post capability
-              console.log('problem');
-            // the user isn't logged in to Facebook.
-          }
-         });
-
-      // ALTERNATELY THE FOLLOWING CODE INCLUDES LOG-IN OPTIONS
-
-      //   FB.login(function(test){
-      // // Note: The call will only work if you accept the permission request
-      //       FB.api('/boulderc3po/feed', 'post', {message: 'We have a new person joining the chat! Introducing: '+FB.getUserID()});
-      //   }, {scope: 'publish_actions'});
-
-    };
-    </script>
-        </div>
-        <div class="modal-footer">
-            <button type="button" id="btn-prev" class="btn {{#if noPrev}}disabled{{/if}}"
-                    data-casenumber='{{caseNum}}'
-                    data-properties='{{featureProperties}}'
-                    data-cansubscribe='{{canSubscribeToProject}}'>Prev</button>
-            <button type="button" id="btn-next" class="btn {{#if noNext}}disabled{{/if}}"
-                    data-casenumber='{{caseNum}}'
-                    data-properties='{{featureProperties}}'
-                    data-cansubscribe='{{canSubscribeToProject}}'>Next</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
 
       </div>
