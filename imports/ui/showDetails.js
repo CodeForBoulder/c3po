@@ -139,7 +139,7 @@ export function showDetails(e) {
         });
 
         $('.btn-fb-discussion').click(function() {
-            openDisc('geronimo!!');
+            $('#disqus_thread').toggle();   // show or hide the disqus div
         });
     }   // end: launchModal()
         
