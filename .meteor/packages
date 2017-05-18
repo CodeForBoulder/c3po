@@ -30,3 +30,4 @@ session
 twbs:bootstrap
 visudare:disqus
 modules-runtime
+http

@@ -6,6 +6,9 @@ import { JSONStream } from 'JSONStream';
 export const Cases = new Mongo.Collection('cases');
 
 if (Meteor.isServer) {
+
+    // var myobject = HTTP.get(Meteor.www-static.bouldercolorado.gov/docs/opendata("/DevelopmentReview.GeoJSON")).data;
+
     // This code only runs on the server
     // Only publish tasks that are public or belong to the current user
 //    console.error("Entered isServer function");
@@ -69,14 +72,16 @@ if (Meteor.isServer) {
 
         var assetPath = getAssetPath();
 
-        var fs = require('fs');
-        var jsonFilePath = './assets/app/DevelopmentReview.GeoJSON.json';
-        var geoJsonFile = fs.readFileSync(jsonFilePath, 'utf-8');
-        var geoJson = JSON.parse(geoJsonFile)
+        const result = HTTP.call('GET', 'https://www-static.bouldercolorado.gov/docs/opendata/DevelopmentReview.GeoJSON');
+
+
+        var importedJSON = JSON.parse(result.content);
+        console.log(importedJSON);
+        var geoJson = importedJSON;
 
         // require will read in and parse only if extension is ".json"
 
-        //geoJson = Assets.getText('DevelopmentReview.GeoJSON.json');
+        // geoJson = Assets.getText('DevelopmentReview.GeoJSON.json');
 
         // geoJson = Assets.getText('public/DevelopmentReview.GeoJSON.json');
         // geoJson = require(assetPath + '/DevelopmentReview.GeoJSON.json');
