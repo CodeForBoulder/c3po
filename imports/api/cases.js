@@ -7,6 +7,7 @@ export const Cases = new Mongo.Collection('cases');
 
 if (Meteor.isServer) {
 
+    debugger; //Jose: statement needed to engage debugger
     // var myobject = HTTP.get(Meteor.www-static.bouldercolorado.gov/docs/opendata("/DevelopmentReview.GeoJSON")).data;
 
     // This code only runs on the server
