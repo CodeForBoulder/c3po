@@ -1,4 +1,10 @@
-# c3po / Building Boulder
+# c3po / Building Boulder (archived)
+
+## ARCHIVE UPDATE
+
+This project lost traction and will be archived. If you find this and wish to pick it up, please [join us](http://www.codeforboulder.org/) and consider [resubmitting a proposal](http://www.codeforboulder.org/project-proposals).
+
+## About
 
 BuildingBoulder is an app to help our community to engage in conversation around construction projects and smart growth. The BuildingBoulder app will allow anyone to find construction projects on a map, follow these projects throughout the development lifecycle based on their location and preferences, and join discussions within the app.
 
